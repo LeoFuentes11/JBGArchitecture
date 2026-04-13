@@ -1,7 +1,7 @@
--- Initial migration for JBG Architects
--- Created: 2026-04-13
+-- Payload CMS migration for JBG Architects
+-- Generated: 2026-04-13
 
--- Users collection (with auth)
+-- Users collection
 CREATE TABLE IF NOT EXISTS "users" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 
 CREATE INDEX IF NOT EXISTS "users_email_idx" ON "users" ("email");
 
--- Payload auth sessions table
+-- Users sessions for auth
 CREATE TABLE IF NOT EXISTS "users_sessions" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "_parent_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
@@ -45,55 +45,51 @@ CREATE TABLE IF NOT EXISTS "media" (
   "width" integer,
   "height" integer,
   "sizes" jsonb,
-  "focal_x" integer,
-  "focal_y" integer,
-  "alt" text,
-  "caption" jsonb
+  "alt" text NOT NULL,
+  "caption" text,
+  "credit" text
 );
 
--- Projects collection
+-- Projects collection  
 CREATE TABLE IF NOT EXISTS "projects" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
   "title" text NOT NULL,
   "slug" text NOT NULL UNIQUE,
+  "category" text NOT NULL,
+  "featured" boolean DEFAULT false,
+  "heroImage" uuid REFERENCES "media"("id"),
+  "gallery" jsonb,
+  "shortDescription" text NOT NULL,
   "description" jsonb,
-  "content" jsonb,
-  "featured_image" uuid REFERENCES "media"("id"),
-  "category" text,
   "location" text,
   "year" integer,
-  "status" text DEFAULT 'draft',
-  "featured" boolean DEFAULT false,
-  "images" jsonb,
   "client" text,
-  "area" text
+  "publishedAt" timestamp with time zone,
+  "seo" jsonb
 );
 
 CREATE INDEX IF NOT EXISTS "projects_slug_idx" ON "projects" ("slug");
-CREATE INDEX IF NOT EXISTS "projects_status_idx" ON "projects" ("status");
 
 -- BlogPosts collection
-CREATE TABLE IF NOT EXISTS "blog_posts" (
+CREATE TABLE IF NOT EXISTS "blog-posts" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
   "title" text NOT NULL,
   "slug" text NOT NULL UNIQUE,
+  "status" text NOT NULL DEFAULT 'draft',
+  "heroImage" uuid REFERENCES "media"("id"),
+  "excerpt" text NOT NULL,
   "content" jsonb,
-  "excerpt" text,
-  "featured_image" uuid REFERENCES "media"("id"),
-  "author" text,
-  "published_at" timestamp with time zone,
-  "status" text DEFAULT 'draft',
-  "tags" jsonb,
-  "categories" jsonb
+  "category" text,
+  "author" uuid REFERENCES "users"("id"),
+  "publishedAt" timestamp with time zone,
+  "seo" jsonb
 );
 
-CREATE INDEX IF NOT EXISTS "blog_posts_slug_idx" ON "blog_posts" ("slug");
-CREATE INDEX IF NOT EXISTS "blog_posts_status_idx" ON "blog_posts" ("status");
-CREATE INDEX IF NOT EXISTS "blog_posts_published_at_idx" ON "blog_posts" ("published_at");
+CREATE INDEX IF NOT EXISTS "blog_posts_slug_idx" ON "blog-posts" ("slug");
 
 -- Services collection
 CREATE TABLE IF NOT EXISTS "services" (
@@ -102,17 +98,17 @@ CREATE TABLE IF NOT EXISTS "services" (
   "updated_at" timestamp with time zone DEFAULT NOW(),
   "title" text NOT NULL,
   "slug" text NOT NULL UNIQUE,
+  "tagline" text NOT NULL,
   "description" jsonb,
   "icon" text,
-  "featured" boolean DEFAULT false,
-  "order" integer DEFAULT 0,
-  "price_range" text
+  "includes" jsonb,
+  "order" integer DEFAULT 0
 );
 
 CREATE INDEX IF NOT EXISTS "services_slug_idx" ON "services" ("slug");
 CREATE INDEX IF NOT EXISTS "services_order_idx" ON "services" ("order");
 
--- Payload requires these internal tables
+-- Payload migrations table
 CREATE TABLE IF NOT EXISTS "_payload_migrations" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "name" varchar NOT NULL,
@@ -122,10 +118,7 @@ CREATE TABLE IF NOT EXISTS "_payload_migrations" (
 
 CREATE INDEX IF NOT EXISTS "_payload_migrations_name_idx" ON "_payload_migrations" ("name");
 
--- Insert initial migration record
+-- Migration record
 INSERT INTO "_payload_migrations" ("name", "batch", "created_at")
 VALUES ('init', 1, NOW())
 ON CONFLICT DO NOTHING;
-
--- Grant permissions (adjust as needed for your Neon setup)
--- Note: Neon uses role-based access, owner has full access by default
