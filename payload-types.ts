@@ -8,6 +8,8 @@ export interface User {
   email: string
   name: string
   role: 'admin' | 'editor'
+  hash?: string
+  salt?: string
   updatedAt: string
   createdAt: string
 }
