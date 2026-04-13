@@ -101,7 +101,7 @@ export function Navbar() {
                 </button>
                 <div
                   onMouseEnter={() => setPortfolioOpen(true)}
-                  className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 w-52 bg-primary/70 backdrop-blur-xl border border-white/10 shadow-xl py-2 transition-all duration-200 ${
+                  className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 z-[60] w-52 bg-primary/90 backdrop-blur-xl border border-white/10 shadow-xl py-2 transition-all duration-200 ${
                     portfolioOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'
                   }`}
                 >
