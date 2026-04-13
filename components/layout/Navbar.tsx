@@ -25,6 +25,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [portfolioOpen, setPortfolioOpen] = useState(false)
+  const [portfolioHover, setPortfolioHover] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -39,12 +40,13 @@ export function Navbar() {
 
   const isHome = pathname === '/'
   const transparent = isHome && !scrolled && !mobileOpen
+  const showOverlay = transparent || portfolioHover
 
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-        transparent
-          ? 'bg-transparent'
+        showOverlay
+          ? 'bg-primary/50 backdrop-blur-sm border-b border-white/10'
           : 'bg-bg/95 backdrop-blur-md border-b border-border'
       }`}
     >
@@ -53,19 +55,19 @@ export function Navbar() {
         <Link href="/" className="flex items-center gap-3 shrink-0" aria-label="JBG Architects — Home">
           <span
             className={`font-display text-xl tracking-[0.08em] font-medium transition-colors duration-300 ${
-              transparent ? 'text-white' : 'text-primary'
+              showOverlay ? 'text-white' : 'text-primary'
             }`}
           >
             JBG
           </span>
           <span
             className={`hidden sm:block h-5 w-px transition-colors duration-300 ${
-              transparent ? 'bg-white/40' : 'bg-border'
+              showOverlay ? 'bg-white/40' : 'bg-border'
             }`}
           />
           <span
             className={`hidden sm:block font-body text-xs tracking-[0.12em] uppercase transition-colors duration-300 ${
-              transparent ? 'text-white/70' : 'text-text-muted'
+              showOverlay ? 'text-white/70' : 'text-text-muted'
             }`}
           >
             Architects
@@ -76,15 +78,15 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) =>
             link.hasDropdown ? (
-              <div key={link.href} className="relative group" onMouseLeave={() => setPortfolioOpen(false)}>
+              <div key={link.href} className="relative group" onMouseEnter={() => setPortfolioHover(true)} onMouseLeave={() => { setPortfolioOpen(false); setPortfolioHover(false) }}>
                 <button
                   onMouseEnter={() => setPortfolioOpen(true)}
                   onClick={() => setPortfolioOpen((p) => !p)}
                   className={`font-body text-sm tracking-wide transition-colors duration-200 flex items-center gap-1.5 ${
-                    transparent
+                    showOverlay
                       ? 'text-white/80 hover:text-white'
                       : 'text-text-muted hover:text-primary'
-                  } ${pathname.startsWith('/portfolio') ? (transparent ? 'text-white' : 'text-primary') : ''}`}
+                  } ${pathname.startsWith('/portfolio') ? (showOverlay ? 'text-white' : 'text-primary') : ''}`}
                 >
                   {link.label}
                   <svg
@@ -126,10 +128,10 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={`font-body text-sm tracking-wide transition-colors duration-200 ${
-                  transparent
+                  showOverlay
                     ? 'text-white/80 hover:text-white'
                     : 'text-text-muted hover:text-primary'
-                } ${pathname === link.href ? (transparent ? 'text-white' : 'text-primary') : ''}`}
+                } ${pathname === link.href ? (showOverlay ? 'text-white' : 'text-primary') : ''}`}
               >
                 {link.label}
               </Link>
@@ -138,7 +140,7 @@ export function Navbar() {
           <Link
             href="/contact"
             className={`font-body text-sm tracking-wide px-6 py-2.5 transition-all duration-300 ${
-              transparent
+              showOverlay
                 ? 'border border-white/60 text-white hover:bg-white hover:text-primary'
                 : 'bg-primary text-white hover:bg-accent'
             }`}
@@ -150,7 +152,7 @@ export function Navbar() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileOpen((o) => !o)}
-          className={`md:hidden p-2 transition-colors ${transparent ? 'text-white' : 'text-primary'}`}
+          className={`md:hidden p-2 transition-colors ${showOverlay ? 'text-white' : 'text-primary'}`}
           aria-label="Toggle menu"
         >
           <div className="w-5 flex flex-col gap-1.5">

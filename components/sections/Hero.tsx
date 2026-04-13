@@ -7,10 +7,16 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const slides = [
   {
-    src: '/images/placeholder-commercial.webp',
+    src: '/images/hero-1.webp',
     alt: 'Barossa Valley winery architecture',
     label: 'Winery Architecture',
     title: 'Crafted for the\nBarossa',
+  },
+  {
+    src: '/images/placeholder-commercial.webp',
+    alt: 'Commercial architecture',
+    label: 'Commercial Design',
+    title: 'Spaces That\nPerform',
   },
   {
     src: '/images/placeholder-heritage.webp',
@@ -23,6 +29,12 @@ const slides = [
     alt: 'Contemporary residential design',
     label: 'Residential Design',
     title: 'Homes That\nEndure',
+  },
+{
+    src: '/images/placeholder-wine.webp',
+    alt: 'Contemporary wine cellar design',
+    label: 'Wine Cellar Design',
+    title: 'Cellars That\nAge Well',
   },
 ]
 
