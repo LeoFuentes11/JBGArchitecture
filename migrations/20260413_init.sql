@@ -21,6 +21,18 @@ CREATE TABLE IF NOT EXISTS "users" (
 
 CREATE INDEX IF NOT EXISTS "users_email_idx" ON "users" ("email");
 
+-- Payload auth sessions table
+CREATE TABLE IF NOT EXISTS "users_sessions" (
+  "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  "_parent_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+  "_order" integer,
+  "created_at" timestamp with time zone DEFAULT NOW(),
+  "expires_at" timestamp with time zone,
+  "session" jsonb
+);
+
+CREATE INDEX IF NOT EXISTS "users_sessions_parent_idx" ON "users_sessions" ("_parent_id");
+
 -- Media collection
 CREATE TABLE IF NOT EXISTS "media" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
