@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 export const BlogPosts: CollectionConfig = {
-  slug: 'blog-posts',
+  slug: 'blog_posts',
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'status', 'publishedAt'],

@@ -1,5 +1,5 @@
 -- Payload CMS migration for JBG Architects
--- Fresh install - 2026-04-13
+-- Using underscores (Drizzle default)
 
 -- Users collection
 CREATE TABLE "users" (
@@ -21,7 +21,7 @@ CREATE TABLE "users" (
 
 CREATE INDEX "users_email_idx" ON "users" ("email");
 
--- Users sessions for auth
+-- Users sessions
 CREATE TABLE "users_sessions" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "_parent_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
@@ -50,7 +50,7 @@ CREATE TABLE "media" (
   "credit" text
 );
 
--- Projects collection  
+-- Projects collection (slug: projects -> projects) 
 CREATE TABLE "projects" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
@@ -72,8 +72,8 @@ CREATE TABLE "projects" (
 
 CREATE INDEX "projects_slug_idx" ON "projects" ("slug");
 
--- BlogPosts collection
-CREATE TABLE "blog-posts" (
+-- BlogPosts collection (slug: blog-posts -> blog_posts)
+CREATE TABLE "blog_posts" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
@@ -89,9 +89,9 @@ CREATE TABLE "blog-posts" (
   "seo" jsonb
 );
 
-CREATE INDEX "blog_posts_slug_idx" ON "blog-posts" ("slug");
+CREATE INDEX "blog_posts_slug_idx" ON "blog_posts" ("slug");
 
--- Services collection
+-- Services collection (slug: services)
 CREATE TABLE "services" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
@@ -108,7 +108,7 @@ CREATE TABLE "services" (
 CREATE INDEX "services_slug_idx" ON "services" ("slug");
 CREATE INDEX "services_order_idx" ON "services" ("order");
 
--- Payload migrations table
+-- Payload migrations
 CREATE TABLE "_payload_migrations" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "name" varchar NOT NULL,
