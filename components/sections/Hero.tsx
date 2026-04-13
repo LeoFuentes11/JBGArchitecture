@@ -91,7 +91,7 @@ export function Hero() {
 
       {/* Content */}
       <div className="relative z-10 container-content h-full flex flex-col justify-end pb-16 md:pb-24">
-        <div className="max-w-3xl backdrop-blur-sm bg-primary/20 border border-white/10 rounded-xl p-6 md:p-8">
+        <div className="max-w-xl backdrop-blur-sm bg-primary/20 border border-white/10 rounded-xl p-6 md:p-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={`label-${current}`}
@@ -146,21 +146,6 @@ export function Hero() {
             />
           ))}
         </div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <span className="section-label text-white/40 text-[10px]">Scroll</span>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
-            className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent"
-          />
-        </motion.div>
       </div>
 
       {/* Established badge */}

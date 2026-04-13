@@ -101,22 +101,22 @@ export function Navbar() {
                 </button>
                 <div
                   onMouseEnter={() => setPortfolioOpen(true)}
-                  className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 w-52 bg-bg border border-border shadow-xl py-2 transition-all duration-200 ${
+                  className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 w-52 bg-primary/70 backdrop-blur-sm border border-white/10 shadow-xl py-2 transition-all duration-200 ${
                     portfolioOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'
                   }`}
                 >
                     <Link
                       href="/portfolio"
-                      className="block px-5 py-2.5 text-sm font-body text-text-muted hover:text-primary hover:bg-surface transition-colors"
+                      className="block px-5 py-2.5 text-sm font-body text-white hover:text-white hover:bg-white/10 transition-colors"
                     >
                       All Projects
                     </Link>
-                    <div className="my-1 border-t border-border" />
+                    <div className="my-1 border-t border-white/10" />
                     {portfolioCategories.map((cat) => (
                       <Link
                       key={cat.href}
                       href={cat.href}
-                      className="block px-5 py-2.5 text-sm font-body text-text-muted hover:text-primary hover:bg-surface transition-colors"
+                      className="block px-5 py-2.5 text-sm font-body text-white hover:text-white hover:bg-white/10 transition-colors"
                     >
                       {cat.label}
                     </Link>
