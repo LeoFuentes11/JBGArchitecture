@@ -14,11 +14,6 @@ import { Services } from './collections/Services'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Debug: Log database connection (masked)
-const dbUrl = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.DATABASE_URI
-console.log('[Payload Config] DB URL present:', !!dbUrl)
-console.log('[Payload Config] DB URL masked:', dbUrl ? dbUrl.replace(/:([^@]+)@/, ':***@') : 'none')
-
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -34,7 +29,13 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
-      connectionString: dbUrl,
+      connectionString: 
+        process.env.DATABASE_URL_UNPOOLED || 
+        process.env.POSTGRES_URL_NON_POOLING || 
+        process.env.DATABASE_URL || 
+        process.env.POSTGRES_URL || 
+        process.env.DATABASE_URI || 
+        '',
       ssl: { rejectUnauthorized: false },
     },
   }),
