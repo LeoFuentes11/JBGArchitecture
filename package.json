@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "payload migrate && next build",
+    "build": "node apply-migration.cjs && next build",
     "start": "next start",
     "lint": "next lint",
-    "payload": "payload",
+    "payload": "npx tsx -r dotenv/config payload",
+    "migrate": "node apply-migration.cjs",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap"
   },
@@ -31,6 +32,8 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.0",
+    "dotenv": "^17.4.2",
+    "pg": "^8.20.0",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.0.0"

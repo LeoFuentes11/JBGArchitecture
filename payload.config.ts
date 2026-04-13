@@ -11,8 +11,8 @@ import { Projects } from './collections/Projects'
 import { BlogPosts } from './collections/BlogPosts'
 import { Services } from './collections/Services'
 
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export default buildConfig({
   admin: {
@@ -25,7 +25,7 @@ export default buildConfig({
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
-    outputFile: path.resolve(dirname, 'payload-types.ts'),
+    outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
     pool: {
