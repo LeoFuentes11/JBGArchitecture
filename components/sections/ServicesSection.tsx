@@ -41,7 +41,7 @@ export function ServicesSection() {
         <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-16">
           <SectionHeader
             label="What We Do"
-            title="Services Tailored to\nYour Project"
+            title="Services Tailored to Your Project"
             className="md:max-w-lg"
           />
           <FadeUp delay={0.2} className="md:self-end">
