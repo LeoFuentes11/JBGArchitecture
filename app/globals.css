@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #FAFAF8;
+  --color-surface: #F0EDE8;
+  --color-primary: #1A1918;
+  --color-accent: #9B8B6E;
+  --color-accent-light: #C4B8A5;
+  --color-text: #1A1918;
+  --color-text-muted: #6B6561;
+  --color-border: #E2DED8;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-bg text-text font-body;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: white;
+  }
+}
+
+@layer components {
+  .container-content {
+    @apply max-w-content mx-auto px-6 md:px-8 lg:px-12;
+  }
+
+  .section-padding {
+    @apply py-20 md:py-28 lg:py-section;
+  }
+
+  .section-padding-sm {
+    @apply py-14 md:py-20 lg:py-section-sm;
+  }
+
+  /* Architectural divider — thin animated line */
+  .arch-divider {
+    @apply block h-px bg-border origin-left;
+  }
+
+  /* Label above section headings */
+  .section-label {
+    @apply text-xs font-body tracking-[0.15em] uppercase text-text-muted font-medium;
+  }
+
+  /* Rich text content from CMS */
+  .prose-jbg {
+    @apply font-body text-base leading-relaxed text-text;
+  }
+
+  .prose-jbg p {
+    @apply mb-4 text-text-muted;
+  }
+
+  .prose-jbg h2 {
+    @apply font-display text-display-sm text-primary mt-8 mb-4;
+  }
+
+  .prose-jbg h3 {
+    @apply font-display text-2xl text-primary mt-6 mb-3;
+  }
+
+  .prose-jbg ul {
+    @apply list-disc list-inside mb-4 space-y-1 text-text-muted;
+  }
+
+  .prose-jbg a {
+    @apply text-accent underline underline-offset-2 hover:text-primary transition-colors;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white font-body text-sm tracking-wide
+    hover:bg-accent transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2
+    focus-visible:ring-accent focus-visible:ring-offset-2;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-8 py-3.5 border border-primary text-primary font-body text-sm tracking-wide
+    hover:bg-primary hover:text-white transition-all duration-300 focus-visible:outline-none
+    focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 text-sm font-body tracking-wide text-text-muted
+    hover:text-primary transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Payload admin overrides */
+[data-theme="light"] {
+  --theme-elevation-0: #FAFAF8;
+}
