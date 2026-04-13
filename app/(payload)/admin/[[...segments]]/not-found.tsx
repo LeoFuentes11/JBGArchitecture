@@ -7,8 +7,7 @@ type Args = {
   searchParams: Promise<{ [key: string]: string | string[] }>
 }
 
-const NotFound = async ({ params, searchParams }: Args) => {
-  return NotFoundPage({ config: Promise.resolve(config), importMap, params, searchParams })
-}
+const NotFound = ({ params, searchParams }: Args) =>
+  NotFoundPage({ config, importMap, params, searchParams })
 
 export default NotFound

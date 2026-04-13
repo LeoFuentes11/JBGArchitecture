@@ -8,12 +8,10 @@ type Args = {
   searchParams: Promise<{ [key: string]: string | string[] }>
 }
 
-export const generateMetadata = async ({ params, searchParams }: Args): Promise<Metadata> => {
-  return generatePageMetadata({ config: Promise.resolve(config), params, searchParams })
-}
+export const generateMetadata = ({ params, searchParams }: Args): Promise<Metadata> =>
+  generatePageMetadata({ config, params, searchParams })
 
-const Page = async ({ params, searchParams }: Args) => {
-  return RootPage({ config: Promise.resolve(config), importMap, params, searchParams })
-}
+const Page = ({ params, searchParams }: Args) =>
+  RootPage({ config, importMap, params, searchParams })
 
 export default Page
