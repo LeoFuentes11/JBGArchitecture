@@ -7,19 +7,19 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const slides = [
   {
-    src: '/images/placeholder-commercial.jpg',
+    src: '/images/placeholder-commercial.webp',
     alt: 'Barossa Valley winery architecture',
     label: 'Winery Architecture',
     title: 'Crafted for the\nBarossa',
   },
   {
-    src: '/images/placeholder-heritage.jpg',
+    src: '/images/placeholder-heritage.webp',
     alt: 'Heritage architecture restoration',
     label: 'Heritage Architecture',
     title: 'Honouring the\nPast',
   },
   {
-    src: '/images/placeholder-residential.jpg',
+    src: '/images/placeholder-residential.webp',
     alt: 'Contemporary residential design',
     label: 'Residential Design',
     title: 'Homes That\nEndure',
@@ -28,6 +28,13 @@ const slides = [
 
 export function Hero() {
   const [current, setCurrent] = useState(0)
+
+  useEffect(() => {
+    slides.forEach((slide) => {
+      const img = new window.Image()
+      img.src = slide.src
+    })
+  }, [])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -64,7 +71,7 @@ export function Hero() {
 
       {/* Content */}
       <div className="relative z-10 container-content h-full flex flex-col justify-end pb-16 md:pb-24">
-        <div className="max-w-3xl">
+        <div className="max-w-3xl backdrop-blur-sm bg-primary/20 border border-white/10 rounded-xl p-6 md:p-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={`label-${current}`}
@@ -107,7 +114,7 @@ export function Hero() {
         </div>
 
         {/* Slide indicators */}
-        <div className="absolute bottom-8 right-6 md:right-12 flex gap-2 items-center">
+        <div className="absolute bottom-8 right-6 md:right-12 flex gap-2 items-center backdrop-blur-sm bg-primary/20 border border-white/10 px-3 py-2 rounded-full">
           {slides.map((_, i) => (
             <button
               key={i}
@@ -138,9 +145,9 @@ export function Hero() {
 
       {/* Established badge */}
       <div className="absolute top-24 right-6 md:right-12 hidden md:block">
-        <div className="border border-white/20 px-4 py-3 text-center">
-          <div className="font-body text-[10px] tracking-[0.15em] uppercase text-white/40">Est.</div>
-          <div className="font-display text-2xl text-white/60">1998</div>
+        <div className="backdrop-blur-sm bg-primary/20 border border-white/10 px-4 py-3 text-center rounded-xl">
+          <div className="font-body text-[10px] tracking-[0.15em] uppercase text-white/60">Est.</div>
+          <div className="font-display text-2xl text-white/80">1998</div>
         </div>
       </div>
     </section>

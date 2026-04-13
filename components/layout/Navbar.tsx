@@ -76,9 +76,8 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) =>
             link.hasDropdown ? (
-              <div key={link.href} className="relative" onMouseLeave={() => setPortfolioOpen(false)}>
+              <div key={link.href} className="relative" onMouseEnter={() => setPortfolioOpen(true)} onMouseLeave={() => setPortfolioOpen(false)}>
                 <button
-                  onMouseEnter={() => setPortfolioOpen(true)}
                   onClick={() => setPortfolioOpen((p) => !p)}
                   className={`font-body text-sm tracking-wide transition-colors duration-200 flex items-center gap-1.5 ${
                     transparent
