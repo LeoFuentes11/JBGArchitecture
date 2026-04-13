@@ -29,18 +29,16 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
-      // DATABASE_URL_UNPOOLED is the direct Neon connection (supports DDL for push/migrate)
-      // DATABASE_URL is the pooled connection set by Vercel's Neon integration
-      // DATABASE_URI is the local dev fallback
       connectionString:
-        process.env.DATABASE_URL_UNPOOLED ||      // Neon integration v2 (direct)
-        process.env.POSTGRES_URL_NON_POOLING ||   // Neon integration v1 (direct)
-        process.env.DATABASE_URL ||               // Neon pooled (fallback)
-        process.env.POSTGRES_URL ||              // Neon pooled v1 (fallback)
-        process.env.DATABASE_URI ||              // Local dev
+        process.env.DATABASE_URL_UNPOOLED ||    // Neon direct (DDL-safe, set by Neon integration)
+        process.env.POSTGRES_URL_NON_POOLING || // Neon direct v1 name
+        process.env.DATABASE_URL ||             // Neon pooled (runtime queries)
+        process.env.POSTGRES_URL ||             // Neon pooled v1 name
+        process.env.DATABASE_URI ||             // Local dev
         '',
       ssl: { rejectUnauthorized: false },
     },
+    // Uses DATABASE_URL_UNPOOLED (direct connection) which supports DDL — safe for push
     push: true,
   }),
   plugins: [
