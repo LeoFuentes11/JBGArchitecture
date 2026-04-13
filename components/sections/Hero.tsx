@@ -28,6 +28,7 @@ const slides = [
 
 export function Hero() {
   const [current, setCurrent] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
   useEffect(() => {
     slides.forEach((slide) => {
@@ -38,36 +39,43 @@ export function Hero() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrent((c) => (c + 1) % slides.length)
+      setIsTransitioning(true)
+      setTimeout(() => {
+        setCurrent((c) => (c + 1) % slides.length)
+        setIsTransitioning(false)
+      }, 1200)
     }, 6000)
     return () => clearInterval(timer)
   }, [])
 
-  const slide = slides[current]
+  const currentSlide = slides[current]
+  const nextIndex = (current + 1) % slides.length
+  const nextSlide = slides[nextIndex]
 
   return (
     <section className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden bg-primary">
-      {/* Background Images */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current}
-          initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-0"
-        >
-          <Image
-            src={slide.src}
-            alt={slide.alt}
-            fill
-            priority
-            className="object-cover"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/70 via-primary/30 to-primary/60" />
-        </motion.div>
-      </AnimatePresence>
+      {/* Background Images - All visible, fading controlled by parent */}
+      <div className="absolute inset-0">
+        {slides.map((slide, index) => (
+          <div
+            key={slide.src}
+            className="absolute inset-0 transition-opacity duration-[1200ms]"
+            style={{
+              opacity: index === current ? 1 : 0,
+            }}
+          >
+            <Image
+              src={slide.src}
+              alt={slide.alt}
+              fill
+              priority={index === 0}
+              className="object-cover"
+              sizes="100vw"
+            />
+          </div>
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/70 via-primary/30 to-primary/60" />
+      </div>
 
       {/* Content */}
       <div className="relative z-10 container-content h-full flex flex-col justify-end pb-16 md:pb-24">
@@ -81,7 +89,7 @@ export function Hero() {
               transition={{ duration: 0.5, ease: 'easeOut' }}
               className="section-label text-white/60 mb-4"
             >
-              {slide.label}
+              {currentSlide.label}
             </motion.div>
           </AnimatePresence>
 
@@ -94,7 +102,7 @@ export function Hero() {
               transition={{ duration: 0.7, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
               className="font-display text-display-xl text-white whitespace-pre-line mb-8"
             >
-              {slide.title}
+              {currentSlide.title}
             </motion.h1>
           </AnimatePresence>
 

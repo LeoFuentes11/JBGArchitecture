@@ -76,8 +76,9 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) =>
             link.hasDropdown ? (
-              <div key={link.href} className="relative" onMouseEnter={() => setPortfolioOpen(true)} onMouseLeave={() => setPortfolioOpen(false)}>
+              <div key={link.href} className="relative group" onMouseLeave={() => setPortfolioOpen(false)}>
                 <button
+                  onMouseEnter={() => setPortfolioOpen(true)}
                   onClick={() => setPortfolioOpen((p) => !p)}
                   className={`font-body text-sm tracking-wide transition-colors duration-200 flex items-center gap-1.5 ${
                     transparent
@@ -96,8 +97,12 @@ export function Navbar() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-                {portfolioOpen && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-52 bg-bg border border-border shadow-xl py-2">
+                <div
+                  onMouseEnter={() => setPortfolioOpen(true)}
+                  className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 w-52 bg-bg border border-border shadow-xl py-2 transition-all duration-200 ${
+                    portfolioOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'
+                  }`}
+                >
                     <Link
                       href="/portfolio"
                       className="block px-5 py-2.5 text-sm font-body text-text-muted hover:text-primary hover:bg-surface transition-colors"
@@ -107,15 +112,14 @@ export function Navbar() {
                     <div className="my-1 border-t border-border" />
                     {portfolioCategories.map((cat) => (
                       <Link
-                        key={cat.href}
-                        href={cat.href}
-                        className="block px-5 py-2.5 text-sm font-body text-text-muted hover:text-primary hover:bg-surface transition-colors"
-                      >
-                        {cat.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
+                      key={cat.href}
+                      href={cat.href}
+                      className="block px-5 py-2.5 text-sm font-body text-text-muted hover:text-primary hover:bg-surface transition-colors"
+                    >
+                      {cat.label}
+                    </Link>
+                  ))}
+                </div>
               </div>
             ) : (
               <Link
