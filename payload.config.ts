@@ -29,7 +29,11 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI || process.env.DATABASE_URL || '',
+      connectionString:
+        process.env.DATABASE_URI ||
+        process.env.POSTGRES_URL_NON_POOLING ||
+        process.env.DATABASE_URL ||
+        '',
     },
     push: true,
   }),
