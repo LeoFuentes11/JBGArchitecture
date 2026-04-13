@@ -7,19 +7,19 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const slides = [
   {
-    src: '/images/hero-1.jpg',
+    src: '/images/placeholder-commercial.jpg',
     alt: 'Barossa Valley winery architecture',
     label: 'Winery Architecture',
     title: 'Crafted for the\nBarossa',
   },
   {
-    src: '/images/hero-2.jpg',
+    src: '/images/placeholder-heritage.jpg',
     alt: 'Heritage architecture restoration',
     label: 'Heritage Architecture',
     title: 'Honouring the\nPast',
   },
   {
-    src: '/images/hero-3.jpg',
+    src: '/images/placeholder-residential.jpg',
     alt: 'Contemporary residential design',
     label: 'Residential Design',
     title: 'Homes That\nEndure',
