@@ -1,4 +1,6 @@
 require('dotenv').config({ path: '.env.local' })
+const fs = require('fs')
+const path = require('path')
 const { Client } = require('pg')
 
 const client = new Client({
@@ -7,11 +9,7 @@ const client = new Client({
 })
 
 function parseSQL(sql) {
-  // Remove SQL comments (-- and /* */)
-  let cleaned = sql
-    .replace(/--[^\n]*/g, '') // Remove line comments
-    .replace(/\/\*[\s\S]*?\*\//g, '') // Remove block comments
-  
+  let cleaned = sql.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '')
   const statements = []
   let current = ''
   let inQuote = false
@@ -36,33 +34,35 @@ function parseSQL(sql) {
   }
   const stmt = current.trim()
   if (stmt) statements.push(stmt)
-  
   return statements
 }
 
 async function migrate() {
-  const fs = require('fs')
-  const path = require('path')
-  
-  const sql = fs.readFileSync(path.join(__dirname, 'migrations', '20260413_init.sql'), 'utf8')
-  const statements = parseSQL(sql)
-
-  console.log('Total statements:', statements.length)
-  console.log('First 3:')
-  statements.slice(0, 3).forEach((s, i) => console.log(i + ':', s.substring(0, 60)))
-  console.log()
-
   try {
     await client.connect()
+    console.log('Connected to database')
 
+    // Drop old tables (ignore errors if they don't exist)
+    const oldTables = ['users_sessions', 'users', 'blog-posts', 'blog_posts', 'media', 'projects', 'services', '_payload_migrations']
+    for (const t of oldTables) {
+      try { await client.query(`DROP TABLE IF EXISTS "${t}" CASCADE`) } catch {}
+    }
+    console.log('Dropped old tables')
+
+    // Read and run new migration
+    const sql = fs.readFileSync(path.join(__dirname, 'migrations', '20260413_init.sql'), 'utf8')
+    const statements = parseSQL(sql)
+
+    console.log('Running migration...')
     for (let i = 0; i < statements.length; i++) {
       const stmt = statements[i]
-      
+      if (!stmt) continue
       try {
         await client.query(stmt)
-        console.log(`✓ [${i + 1}/${statements.length}]:`, stmt.substring(0, 60).replace(/\s+/g, ' '))
       } catch (err) {
-        console.log(`✗ [${i + 1}/${statements.length}] ${err.code}:`, stmt.substring(0, 50).replace(/\s+/g, ' '))
+        if (err.code !== '42P07' && err.code !== '42710') {
+          console.log(`Error ${err.code}:`, stmt.substring(0, 40))
+        }
       }
     }
 
@@ -70,12 +70,9 @@ async function migrate() {
     const result = await client.query(
       "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name"
     )
-    console.log('\nTables in database:')
-    if (result.rows.length === 0) {
-      console.log('  (none)')
-    } else {
-      result.rows.forEach(r => console.log(' - ' + r.table_name))
-    }
+    console.log('\nTables created:')
+    result.rows.forEach(r => console.log(' -', r.table_name))
+    console.log('\n✓ Migration complete!')
   } catch (err) {
     console.error('Failed:', err.message)
   } finally {
