@@ -10,7 +10,6 @@ export const Users: CollectionConfig = {
     {
       name: 'name',
       type: 'text',
-      required: true,
     },
     {
       name: 'role',
@@ -20,7 +19,6 @@ export const Users: CollectionConfig = {
         { label: 'Editor', value: 'editor' },
       ],
       defaultValue: 'editor',
-      required: true,
     },
   ],
 }
