@@ -14,6 +14,11 @@ import { Services } from './collections/Services'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// Debug: Log database connection (masked)
+const dbUrl = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.DATABASE_URI
+console.log('[Payload Config] DB URL present:', !!dbUrl)
+console.log('[Payload Config] DB URL masked:', dbUrl ? dbUrl.replace(/:([^@]+)@/, ':***@') : 'none')
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -29,13 +34,7 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
-      connectionString:
-        process.env.DATABASE_URL_UNPOOLED ||    // Neon direct (DDL-safe, set by Neon integration)
-        process.env.POSTGRES_URL_NON_POOLING || // Neon direct v1 name
-        process.env.DATABASE_URL ||             // Neon pooled (runtime queries)
-        process.env.POSTGRES_URL ||             // Neon pooled v1 name
-        process.env.DATABASE_URI ||             // Local dev
-        '',
+      connectionString: dbUrl,
       ssl: { rejectUnauthorized: false },
     },
   }),
@@ -50,7 +49,7 @@ export default buildConfig({
   ],
   upload: {
     limits: {
-      fileSize: 10000000, // 10MB
+      fileSize: 10000000,
     },
   },
   cors: [process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'],

@@ -3,11 +3,6 @@ const fs = require('fs')
 const path = require('path')
 const { Client } = require('pg')
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL_UNPOOLED,
-  ssl: { rejectUnauthorized: false },
-})
-
 function parseSQL(sql) {
   let cleaned = sql.replace(/--[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '')
   const statements = []
@@ -38,30 +33,50 @@ function parseSQL(sql) {
 }
 
 async function migrate() {
+  // Check env
+  const dbUrl = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.DATABASE_URI
+  console.log('DB URL exists:', !!dbUrl)
+  console.log('DB URL starts with:', dbUrl ? dbUrl.substring(0, 30) : 'none')
+  
+  if (!dbUrl) {
+    console.error('No database URL found in environment!')
+    process.exit(1)
+  }
+  
+  const client = new Client({
+    connectionString: dbUrl,
+    ssl: { rejectUnauthorized: false },
+    connectionTimeoutMillis: 10000,
+  })
+
   try {
     await client.connect()
     console.log('Connected to database')
 
-    // Drop old tables (ignore errors if they don't exist)
+    // Drop old tables
     const oldTables = ['users_sessions', 'users', 'blog-posts', 'blog_posts', 'media', 'projects', 'services', '_payload_migrations']
     for (const t of oldTables) {
-      try { await client.query(`DROP TABLE IF EXISTS "${t}" CASCADE`) } catch {}
+      try { 
+        await client.query(`DROP TABLE IF EXISTS "${t}" CASCADE`) 
+        console.log('Dropped:', t)
+      } catch (e) {
+        // Ignore
+      }
     }
     console.log('Dropped old tables')
 
-    // Read and run new migration
+    // Run new migration
     const sql = fs.readFileSync(path.join(__dirname, 'migrations', '20260413_init.sql'), 'utf8')
     const statements = parseSQL(sql)
 
     console.log('Running migration...')
-    for (let i = 0; i < statements.length; i++) {
-      const stmt = statements[i]
+    for (const stmt of statements) {
       if (!stmt) continue
       try {
         await client.query(stmt)
       } catch (err) {
         if (err.code !== '42P07' && err.code !== '42710') {
-          console.log(`Error ${err.code}:`, stmt.substring(0, 40))
+          console.log('Error:', err.code, stmt.substring(0, 30))
         }
       }
     }
@@ -73,10 +88,13 @@ async function migrate() {
     console.log('\nTables created:')
     result.rows.forEach(r => console.log(' -', r.table_name))
     console.log('\n✓ Migration complete!')
+    
   } catch (err) {
-    console.error('Failed:', err.message)
+    console.error('Migration failed:', err.message)
+    console.error(err.stack)
+    process.exit(1)
   } finally {
-    await client.end()
+    await client.end().catch(() => {})
   }
 }
 
