@@ -67,7 +67,7 @@ export function FeaturedProjects({ projects = placeholderProjects }: FeaturedPro
         <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-12">
           <SectionHeader
             label="Selected Work"
-            title="Projects We're\nProud Of"
+            title="Projects We're Proud Of"
           />
           <FadeUp delay={0.2} className="md:self-end">
             <Link href="/portfolio" className="btn-ghost group">
