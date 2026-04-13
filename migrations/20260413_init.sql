@@ -1,8 +1,8 @@
 -- Payload CMS migration for JBG Architects
--- Generated: 2026-04-13
+-- Fresh install - 2026-04-13
 
 -- Users collection
-CREATE TABLE IF NOT EXISTS "users" (
+CREATE TABLE "users" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS "users" (
   "role" text NOT NULL DEFAULT 'editor'
 );
 
-CREATE INDEX IF NOT EXISTS "users_email_idx" ON "users" ("email");
+CREATE INDEX "users_email_idx" ON "users" ("email");
 
 -- Users sessions for auth
-CREATE TABLE IF NOT EXISTS "users_sessions" (
+CREATE TABLE "users_sessions" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "_parent_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
   "_order" integer,
@@ -31,10 +31,10 @@ CREATE TABLE IF NOT EXISTS "users_sessions" (
   "session" jsonb
 );
 
-CREATE INDEX IF NOT EXISTS "users_sessions_parent_idx" ON "users_sessions" ("_parent_id");
+CREATE INDEX "users_sessions_parent_idx" ON "users_sessions" ("_parent_id");
 
 -- Media collection
-CREATE TABLE IF NOT EXISTS "media" (
+CREATE TABLE "media" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS "media" (
 );
 
 -- Projects collection  
-CREATE TABLE IF NOT EXISTS "projects" (
+CREATE TABLE "projects" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
@@ -70,10 +70,10 @@ CREATE TABLE IF NOT EXISTS "projects" (
   "seo" jsonb
 );
 
-CREATE INDEX IF NOT EXISTS "projects_slug_idx" ON "projects" ("slug");
+CREATE INDEX "projects_slug_idx" ON "projects" ("slug");
 
 -- BlogPosts collection
-CREATE TABLE IF NOT EXISTS "blog-posts" (
+CREATE TABLE "blog-posts" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
@@ -89,10 +89,10 @@ CREATE TABLE IF NOT EXISTS "blog-posts" (
   "seo" jsonb
 );
 
-CREATE INDEX IF NOT EXISTS "blog_posts_slug_idx" ON "blog-posts" ("slug");
+CREATE INDEX "blog_posts_slug_idx" ON "blog-posts" ("slug");
 
 -- Services collection
-CREATE TABLE IF NOT EXISTS "services" (
+CREATE TABLE "services" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
@@ -105,20 +105,15 @@ CREATE TABLE IF NOT EXISTS "services" (
   "order" integer DEFAULT 0
 );
 
-CREATE INDEX IF NOT EXISTS "services_slug_idx" ON "services" ("slug");
-CREATE INDEX IF NOT EXISTS "services_order_idx" ON "services" ("order");
+CREATE INDEX "services_slug_idx" ON "services" ("slug");
+CREATE INDEX "services_order_idx" ON "services" ("order");
 
 -- Payload migrations table
-CREATE TABLE IF NOT EXISTS "_payload_migrations" (
+CREATE TABLE "_payload_migrations" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "name" varchar NOT NULL,
   "batch" integer,
   "created_at" timestamp with time zone DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS "_payload_migrations_name_idx" ON "_payload_migrations" ("name");
-
--- Migration record
-INSERT INTO "_payload_migrations" ("name", "batch", "created_at")
-VALUES ('init', 1, NOW())
-ON CONFLICT DO NOTHING;
+CREATE INDEX "_payload_migrations_name_idx" ON "_payload_migrations" ("name");
