@@ -33,9 +33,11 @@ export default buildConfig({
       // DATABASE_URL is the pooled connection set by Vercel's Neon integration
       // DATABASE_URI is the local dev fallback
       connectionString:
-        process.env.DATABASE_URL_UNPOOLED ||
-        process.env.DATABASE_URL ||
-        process.env.DATABASE_URI ||
+        process.env.DATABASE_URL_UNPOOLED ||      // Neon integration v2 (direct)
+        process.env.POSTGRES_URL_NON_POOLING ||   // Neon integration v1 (direct)
+        process.env.DATABASE_URL ||               // Neon pooled (fallback)
+        process.env.POSTGRES_URL ||              // Neon pooled v1 (fallback)
+        process.env.DATABASE_URI ||              // Local dev
         '',
       ssl: { rejectUnauthorized: false },
     },
