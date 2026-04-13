@@ -1,8 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getProjects } from '@/lib/payload'
-import type { Project, Media } from '@/payload-types'
+import type { Project, Media } from '@/types/cms'
 import { FadeUp } from '@/components/ui/FadeUp'
 
 const categoryLabels: Record<string, string> = {
@@ -27,17 +26,10 @@ interface PortfolioGridProps {
   category?: string
 }
 
-export async function PortfolioGrid({ category }: PortfolioGridProps) {
-  let projects: Project[] = []
-  try {
-    projects = await getProjects(category || undefined)
-  } catch {
-    // CMS unavailable — show placeholders
-  }
-
-  const displayed: Project[] = projects.length > 0 ? projects : (
-    category ? placeholderProjects.filter((p) => p.category === category) : placeholderProjects
-  )
+export function PortfolioGrid({ category }: PortfolioGridProps) {
+  const displayed: Project[] = category
+    ? placeholderProjects.filter((p) => p.category === category)
+    : placeholderProjects
 
   if (displayed.length === 0) {
     return (

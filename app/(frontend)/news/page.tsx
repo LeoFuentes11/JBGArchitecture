@@ -4,8 +4,7 @@ import Link from 'next/link'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { FadeUp } from '@/components/ui/FadeUp'
 import { ArchLine } from '@/components/ui/ArchLine'
-import { getPublishedBlogPosts } from '@/lib/payload'
-import type { BlogPost, Media } from '@/payload-types'
+import type { BlogPost, Media } from '@/types/cms'
 
 export const metadata: Metadata = {
   title: 'News — Latest from JBG',
@@ -60,14 +59,7 @@ const categoryLabels: Record<string, string> = {
 }
 
 export default async function NewsPage() {
-  let posts: BlogPost[] = []
-  try {
-    posts = await getPublishedBlogPosts(20)
-  } catch {
-    // CMS unavailable
-  }
-
-  const displayed: BlogPost[] = posts.length > 0 ? posts : placeholderPosts
+  const displayed: BlogPost[] = placeholderPosts
 
   return (
     <>

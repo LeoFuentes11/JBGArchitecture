@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { FadeUp } from '@/components/ui/FadeUp'
-import type { Project, Media } from '@/payload-types'
+import type { Project, Media } from '@/types/cms'
 
 const categoryLabels: Record<string, string> = {
   'interior-design': 'Interior Design',

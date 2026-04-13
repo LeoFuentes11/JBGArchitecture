@@ -5,8 +5,7 @@ import { ServicesSection } from '@/components/sections/ServicesSection'
 import { FeaturedProjects } from '@/components/sections/FeaturedProjects'
 import { Testimonial } from '@/components/sections/Testimonial'
 import { ContactCTA } from '@/components/sections/ContactCTA'
-import { getFeaturedProjects } from '@/lib/payload'
-import type { Project } from '@/payload-types'
+import type { Project } from '@/types/cms'
 
 export const metadata: Metadata = {
   title: 'JBG Architects | Premier Architecture South Australia',
@@ -58,12 +57,7 @@ const jsonLd = {
 }
 
 export default async function HomePage() {
-  let featuredProjects: Project[] = []
-  try {
-    featuredProjects = await getFeaturedProjects()
-  } catch {
-    // CMS not available yet — use placeholder data
-  }
+  const featuredProjects: Project[] = []
 
   return (
     <>

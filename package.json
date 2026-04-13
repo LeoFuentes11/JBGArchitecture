@@ -4,27 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node apply-migration.cjs && next build",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "payload": "npx tsx -r dotenv/config payload",
-    "migrate": "node apply-migration.cjs",
-    "generate:types": "payload generate:types",
-    "generate:importmap": "payload generate:importmap"
+    "lint": "next lint"
   },
   "dependencies": {
-    "@payloadcms/db-postgres": "^3.0.0",
-    "@payloadcms/next": "^3.0.0",
-    "@payloadcms/richtext-lexical": "^3.0.0",
-    "@payloadcms/storage-vercel-blob": "^3.0.0",
     "framer-motion": "^11.0.0",
-    "graphql": "^16.8.1",
     "next": "~15.4.11",
-    "payload": "^3.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "resend": "^4.0.0",
-    "sharp": "^0.33.0",
     "zod": "^3.22.0"
   },
   "devDependencies": {
@@ -32,8 +21,6 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.0",
-    "dotenv": "^17.4.2",
-    "pg": "^8.20.0",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.0.0"
