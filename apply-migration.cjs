@@ -63,17 +63,7 @@ async function migrate() {
     await client.connect()
     console.log('[Migrate] Connected to database')
 
-    // Drop old tables
-    const oldTables = ['users_sessions', 'users', 'blog-posts', 'blog_posts', 'media', 'projects', 'services', '_payload_migrations']
-    for (const t of oldTables) {
-      try { 
-        await client.query(`DROP TABLE IF EXISTS "${t}" CASCADE`) 
-        console.log('[Migrate] Dropped:', t)
-      } catch (e) {}
-    }
-    console.log('[Migrate] Dropped old tables')
-
-    // Run migration
+    // Run migration (CREATE IF NOT EXISTS - safe to run multiple times)
     const sql = fs.readFileSync(path.join(__dirname, 'migrations', '20260413_init.sql'), 'utf8')
     const statements = parseSQL(sql)
 

@@ -2,7 +2,7 @@
 -- Using underscores (Drizzle default)
 
 -- Users collection
-CREATE TABLE "users" (
+CREATE TABLE IF NOT EXISTS "users" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
@@ -15,14 +15,14 @@ CREATE TABLE "users" (
   "hash" varchar,
   "login_attempts" integer DEFAULT 0,
   "lock_until" timestamp with time zone,
-  "name" text NOT NULL,
-  "role" text NOT NULL DEFAULT 'editor'
+  "name" text,
+  "role" text DEFAULT 'editor'
 );
 
 CREATE INDEX "users_email_idx" ON "users" ("email");
 
 -- Users sessions
-CREATE TABLE "users_sessions" (
+CREATE TABLE IF NOT EXISTS "users_sessions" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "_parent_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
   "_order" integer,
@@ -34,7 +34,7 @@ CREATE TABLE "users_sessions" (
 CREATE INDEX "users_sessions_parent_idx" ON "users_sessions" ("_parent_id");
 
 -- Media collection
-CREATE TABLE "media" (
+CREATE TABLE IF NOT EXISTS "media" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
@@ -51,7 +51,7 @@ CREATE TABLE "media" (
 );
 
 -- Projects collection (slug: projects -> projects) 
-CREATE TABLE "projects" (
+CREATE TABLE IF NOT EXISTS "projects" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
@@ -73,7 +73,7 @@ CREATE TABLE "projects" (
 CREATE INDEX "projects_slug_idx" ON "projects" ("slug");
 
 -- BlogPosts collection (slug: blog-posts -> blog_posts)
-CREATE TABLE "blog_posts" (
+CREATE TABLE IF NOT EXISTS "blog_posts" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
@@ -92,7 +92,7 @@ CREATE TABLE "blog_posts" (
 CREATE INDEX "blog_posts_slug_idx" ON "blog_posts" ("slug");
 
 -- Services collection (slug: services)
-CREATE TABLE "services" (
+CREATE TABLE IF NOT EXISTS "services" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "created_at" timestamp with time zone DEFAULT NOW(),
   "updated_at" timestamp with time zone DEFAULT NOW(),
@@ -109,7 +109,7 @@ CREATE INDEX "services_slug_idx" ON "services" ("slug");
 CREATE INDEX "services_order_idx" ON "services" ("order");
 
 -- Payload migrations
-CREATE TABLE "_payload_migrations" (
+CREATE TABLE IF NOT EXISTS "_payload_migrations" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   "name" varchar NOT NULL,
   "batch" integer,
