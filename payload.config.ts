@@ -59,6 +59,14 @@ export default buildConfig({
       fileSize: 10000000,
     },
   },
-  cors: [process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'],
-  csrf: [process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'],
+  cors: [
+    process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '',
+    process.env.VERCEL_BRANCH_URL ? `https://${process.env.VERCEL_BRANCH_URL}` : '',
+  ].filter(Boolean),
+  csrf: [
+    process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '',
+    process.env.VERCEL_BRANCH_URL ? `https://${process.env.VERCEL_BRANCH_URL}` : '',
+  ].filter(Boolean),
 })
