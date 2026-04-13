@@ -38,8 +38,6 @@ export default buildConfig({
         '',
       ssl: { rejectUnauthorized: false },
     },
-    // Uses DATABASE_URL_UNPOOLED (direct connection) which supports DDL — safe for push
-    push: true,
   }),
   plugins: [
     vercelBlobStorage({
