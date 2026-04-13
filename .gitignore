@@ -30,6 +30,12 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# helper scripts (use migrate.js instead)
+# apply-migration.cjs - needed for Vercel to run migrations
+check-tables.cjs
+migrate.cjs
+migrate.js
+
 # vercel
 .vercel
 
