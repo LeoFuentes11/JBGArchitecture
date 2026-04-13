@@ -14,17 +14,7 @@ import { Services } from './collections/Services'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// IMPORTANT: Don't use short-circuit - evaluate each separately for logging
 const dbUrl = process.env.DATABASE_URL_UNPOOLED || process.env.POSTGRES_URL_NON_POOLING || process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.DATABASE_URI
-
-console.log('[PAYLOAD] DATABASE_URL_UNPOOLED:', process.env.DATABASE_URL_UNPOOLED ? 'SET' : 'NOT SET')
-console.log('[PAYLOAD] POSTGRES_URL_NON_POOLING:', process.env.POSTGRES_URL_NON_POOLING ? 'SET' : 'NOT SET')
-console.log('[PAYLOAD] DATABASE_URL:', process.env.DATABASE_URL ? 'SET' : 'NOT SET')
-console.log('[PAYLOAD] Selected DB URL:', dbUrl ? 'YES (' + dbUrl.substring(0, 30) + '...)' : 'NO')
-
-if (!dbUrl) {
-  console.error('[PAYLOAD] FATAL: No database URL! Set DATABASE_URL_UNPOOLED in Vercel Environment Variables for Production.')
-}
 
 export default buildConfig({
   admin: {
@@ -42,7 +32,6 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: dbUrl || '',
-      ssl: { rejectUnauthorized: false },
     },
   }),
   plugins: [
