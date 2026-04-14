@@ -25,6 +25,9 @@ const nextConfig = {
     config.resolve.alias['pg-native'] = false
     return config
   },
+  sassOptions: {
+    includePaths: ['node_modules'],
+  },
 }
 
 export default withPayload(nextConfig)
