@@ -28,15 +28,6 @@ const nextConfig = {
     }
     config.resolve.alias['pg-native'] = false
 
-    // Prevent Node.js from trying to load CSS files as ESM modules
-    // (react-image-crop and other Payload UI deps import CSS)
-    if (isServer) {
-      config.module.rules.push({
-        test: /\.css$/,
-        use: 'null-loader',
-      })
-    }
-
     return config
   },
   sassOptions: {
