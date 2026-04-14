@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run generate:types && npm run generate:importmap && next build",
     "start": "next start",
     "lint": "next lint",
+    "generate:types": "node --import tsx node_modules/payload/bin.js generate:types --disable-transpile",
+    "generate:importmap": "node --import tsx node_modules/payload/bin.js generate:importmap --disable-transpile",
     "postinstall": "node scripts/patch-payload.cjs"
   },
   "dependencies": {
@@ -20,6 +22,13 @@
     "react-dom": "^19.0.0",
     "resend": "^4.0.0",
     "zod": "^3.22.0"
+  },
+  "overrides": {
+    "payload": "^3.82.1",
+    "@payloadcms/ui": "^3.82.1",
+    "@payloadcms/next": "^3.82.1",
+    "@payloadcms/storage-vercel-blob": "^3.82.1",
+    "@payloadcms/db-postgres": "^3.82.1"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

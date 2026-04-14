@@ -19,7 +19,7 @@ export async function AboutIntro() {
   try {
     const payload = await getPayloadClient()
     const result = await payload.findGlobal({ slug: 'about-page' })
-    if (result?.stats?.length > 0) {
+    if ((result?.stats?.length ?? 0) > 0) {
       stats = result.stats as Stat[]
     }
   } catch {
