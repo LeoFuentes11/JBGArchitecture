@@ -3,6 +3,7 @@ import configPromise from '@payload-config'
 import type { ServerFunctionClient } from 'payload'
 import React from 'react'
 import { importMap } from './admin/importMap.js'
+import '@payloadcms/ui/css'
 
 export const metadata = {
   title: 'JBG Architecture CMS',
