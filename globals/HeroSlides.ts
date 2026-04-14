@@ -1,7 +1,7 @@
 import type { GlobalConfig } from 'payload'
 import { isAdminOrEditor } from '@/lib/access'
 
-const HeroSlides: GlobalConfig = {
+export const HeroSlides: GlobalConfig = {
   slug: 'hero-slides',
   label: 'Hero Slides',
   admin: {

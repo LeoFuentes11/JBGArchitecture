@@ -21,6 +21,12 @@ const nextConfig = {
   experimental: {
     reactCompiler: false,
   },
+  serverExternalPackages: ['@payloadcms/richtext-lexical'],
+  outputFileTracingIncludes: {
+    '/app/(payload)/admin/[[...segments]]/page': [
+      './node_modules/@payloadcms/**/*.js',
+    ],
+  },
   webpack: (config) => {
     config.resolve.extensionAlias = {
       '.js': ['.ts', '.tsx', '.js'],

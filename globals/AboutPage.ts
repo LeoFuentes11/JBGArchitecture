@@ -1,7 +1,7 @@
 import type { GlobalConfig } from 'payload'
 import { isAdminOrEditor } from '@/lib/access'
 
-const AboutPage: GlobalConfig = {
+export const AboutPage: GlobalConfig = {
   slug: 'about-page',
   label: 'About Page',
   admin: {

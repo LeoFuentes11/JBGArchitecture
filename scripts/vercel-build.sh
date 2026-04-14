@@ -10,7 +10,7 @@ echo "==> Generating Payload import map..."
 npx payload generate:importmap --disable-transpile || true
 
 echo "==> Running Payload migrations..."
-DATABASE_URL="${DATABASE_URL_UNPOOLED:-$DATABASE_URL}" npx payload migrate --disable-transpile || true
+POSTGRES_URL="${POSTGRES_URL_NON_POOLING:-$POSTGRES_URL}" npx payload migrate --disable-transpile || true
 
 echo "==> Building Next.js..."
 npx next build

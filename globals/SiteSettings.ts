@@ -1,7 +1,7 @@
 import type { GlobalConfig } from 'payload'
 import { isAdminOrEditor } from '@/lib/access'
 
-const SiteSettings: GlobalConfig = {
+export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
   label: 'Site Settings',
   admin: {

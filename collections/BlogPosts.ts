@@ -1,7 +1,8 @@
 import type { CollectionConfig } from 'payload'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { isAdminOrEditor } from '@/lib/access'
 
-const BlogPosts: CollectionConfig = {
+export const BlogPosts: CollectionConfig = {
   slug: 'blog-posts',
   admin: {
     useAsTitle: 'title',
@@ -75,11 +76,9 @@ const BlogPosts: CollectionConfig = {
     },
     {
       name: 'content',
-      type: 'textarea',
+      type: 'richText',
       label: 'Content',
-      admin: {
-        description: 'Full post content as plain text.',
-      },
+      editor: lexicalEditor(),
     },
     {
       name: 'seo',

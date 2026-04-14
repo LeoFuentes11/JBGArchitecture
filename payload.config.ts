@@ -1,25 +1,28 @@
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import Users from './collections/Users'
-import Media from './collections/Media'
-import Projects from './collections/Projects'
-import BlogPosts from './collections/BlogPosts'
+import { Users } from './collections/Users'
+import { Media } from './collections/Media'
+import { Projects } from './collections/Projects'
+import { BlogPosts } from './collections/BlogPosts'
 
-import HeroSlides from './globals/HeroSlides'
-import Services from './globals/Services'
-import Testimonials from './globals/Testimonials'
-import AboutPage from './globals/AboutPage'
-import SiteSettings from './globals/SiteSettings'
+import { HeroSlides } from './globals/HeroSlides'
+import { Services } from './globals/Services'
+import { Testimonials } from './globals/Testimonials'
+import { AboutPage } from './globals/AboutPage'
+import { SiteSettings } from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirnamePath = path.dirname(filename)
 
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || process.env.NEXT_PUBLIC_SITE_URL || '',
+
+  editor: lexicalEditor(),
 
   admin: {
     user: Users.slug,
@@ -33,7 +36,8 @@ export default buildConfig({
 
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL,
+      connectionString: process.env.POSTGRES_URL,
+      ssl: { rejectUnauthorized: false },
     },
     migrationDir: path.resolve(dirnamePath, 'migrations'),
   }),

@@ -1,7 +1,7 @@
 import type { GlobalConfig } from 'payload'
 import { isAdminOrEditor } from '@/lib/access'
 
-const Services: GlobalConfig = {
+export const Services: GlobalConfig = {
   slug: 'services',
   label: 'Services',
   admin: {

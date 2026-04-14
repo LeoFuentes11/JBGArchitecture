@@ -3,7 +3,7 @@ import { isAdmin, isAdminOrSelf } from '@/lib/access'
 
 const isAdminField: FieldAccess = ({ req: { user } }) => user?.role === 'admin'
 
-const Users: CollectionConfig = {
+export const Users: CollectionConfig = {
   slug: 'users',
   auth: true,
   admin: {
@@ -39,3 +39,4 @@ const Users: CollectionConfig = {
 }
 
 export default Users
+
