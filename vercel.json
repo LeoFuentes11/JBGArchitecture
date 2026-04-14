@@ -1,9 +1,4 @@
 {
   "buildCommand": "bash scripts/vercel-build.sh",
-  "functions": {
-    "app/**/*.ts": {
-      "maxDuration": 60
-    }
-  },
   "regions": ["iad1"]
 }

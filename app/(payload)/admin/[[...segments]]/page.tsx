@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { RootPage, generatePageMetadata } from '@payloadcms/next/views'
+
+export const maxDuration = 60
 import configPromise from '@payload-config'
 import { importMap } from '../importMap.js'
 
