@@ -1,38 +1,20 @@
-import { withPayload } from '@payloadcms/next/withPayload'
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '*.public.blob.vercel-storage.com',
+        hostname: 'cdn.sanity.io',
       },
       {
         protocol: 'https',
-        hostname: 'jbg-architecture.vercel.app',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.supabase.co',
+        hostname: '*.sanity.media',
       },
     ],
   },
   experimental: {
     reactCompiler: false,
   },
-  webpack: (config, { isServer }) => {
-    config.resolve.extensionAlias = {
-      '.js': ['.ts', '.tsx', '.js'],
-      '.jsx': ['.tsx', '.jsx'],
-    }
-    config.resolve.alias['pg-native'] = false
-
-    return config
-  },
-  sassOptions: {
-    includePaths: ['node_modules'],
-  },
 }
 
-export default withPayload(nextConfig)
+export default nextConfig

@@ -1,5 +1,6 @@
 import React from 'react'
-import { getPayloadClient } from '@/lib/payload'
+import { getTestimonials } from '@/lib/sanity'
+import { transformTestimonials } from '@/lib/transform'
 import { TestimonialSlider } from './TestimonialSlider'
 import type { TestimonialItem } from '@/types/cms'
 
@@ -22,13 +23,13 @@ const FALLBACK_TESTIMONIALS: TestimonialItem[] = [
 ]
 
 export async function Testimonial() {
-  let testimonials: TestimonialItem[] = FALLBACK_TESTIMONIALS
+  let testimonials = FALLBACK_TESTIMONIALS
 
   try {
-    const payload = await getPayloadClient()
-    const result = await payload.findGlobal({ slug: 'testimonials' })
-    if (result?.testimonials?.length > 0) {
-      testimonials = result.testimonials as TestimonialItem[]
+    const sanityData = await getTestimonials()
+    if (sanityData?.testimonials?.length > 0) {
+      const transformed = transformTestimonials(sanityData)
+      testimonials = transformed.testimonials
     }
   } catch {
     // Use fallback data

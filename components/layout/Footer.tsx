@@ -1,6 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
-import { getPayloadClient } from '@/lib/payload'
+import { getSiteSettings } from '@/lib/sanity'
+import { transformSiteSettings, getDefaultFooter } from '@/lib/transform'
 import type { SiteSettingsGlobal } from '@/types/cms'
 
 const FALLBACK_SETTINGS: SiteSettingsGlobal = {
@@ -20,18 +21,18 @@ const portfolioLinks = [
 ]
 
 export async function Footer() {
-  let settings: SiteSettingsGlobal = FALLBACK_SETTINGS
+  let settings = FALLBACK_SETTINGS
 
   try {
-    const payload = await getPayloadClient()
-    const result = await payload.findGlobal({ slug: 'site-settings' })
-    if (result) {
-      settings = result as unknown as SiteSettingsGlobal
+    const sanityData = await getSiteSettings()
+    if (sanityData) {
+      settings = transformSiteSettings(sanityData)
     }
   } catch {
     // Use fallback data
   }
 
+  const headerData = getDefaultFooter()
   const phone = settings.phone ?? FALLBACK_SETTINGS.phone!
   const email = settings.email ?? FALLBACK_SETTINGS.email!
   const address = settings.address ?? FALLBACK_SETTINGS.address!
@@ -57,16 +58,10 @@ export async function Footer() {
           <div>
             <p className="section-label text-white/30 mb-5">Navigation</p>
             <ul className="space-y-3">
-              {[
-                { label: 'Home', href: '/' },
-                { label: 'Services', href: '/services' },
-                { label: 'About', href: '/about' },
-                { label: 'News', href: '/news' },
-                { label: 'Contact', href: '/contact' },
-              ].map((link) => (
-                <li key={link.href}>
+              {headerData.navItems.map((link) => (
+                <li key={link.url}>
                   <Link
-                    href={link.href}
+                    href={link.url}
                     className="font-body text-sm text-white/50 hover:text-white transition-colors duration-200"
                   >
                     {link.label}

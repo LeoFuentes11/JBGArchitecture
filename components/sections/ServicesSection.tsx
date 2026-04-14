@@ -2,7 +2,8 @@ import React from 'react'
 import Link from 'next/link'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { FadeUp } from '@/components/ui/FadeUp'
-import { getPayloadClient } from '@/lib/payload'
+import { getServices } from '@/lib/sanity'
+import { transformServices } from '@/lib/transform'
 import type { Service } from '@/types/cms'
 
 const FALLBACK_SERVICES: Service[] = [
@@ -33,13 +34,13 @@ const FALLBACK_SERVICES: Service[] = [
 ]
 
 export async function ServicesSection() {
-  let services: Service[] = FALLBACK_SERVICES
+  let services = FALLBACK_SERVICES
 
   try {
-    const payload = await getPayloadClient()
-    const result = await payload.findGlobal({ slug: 'services' })
-    if (result?.services?.length > 0) {
-      services = result.services as Service[]
+    const sanityData = await getServices()
+    if (sanityData?.services?.length > 0) {
+      const transformed = transformServices(sanityData)
+      services = transformed.services
     }
   } catch {
     // Use fallback data
