@@ -4,16 +4,16 @@ import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import Users from './collections/Users.js'
-import Media from './collections/Media.js'
-import Projects from './collections/Projects.js'
-import BlogPosts from './collections/BlogPosts.js'
+import Users from './collections/Users'
+import Media from './collections/Media'
+import Projects from './collections/Projects'
+import BlogPosts from './collections/BlogPosts'
 
-import HeroSlides from './globals/HeroSlides.js'
-import Services from './globals/Services.js'
-import Testimonials from './globals/Testimonials.js'
-import AboutPage from './globals/AboutPage.js'
-import SiteSettings from './globals/SiteSettings.js'
+import HeroSlides from './globals/HeroSlides'
+import Services from './globals/Services'
+import Testimonials from './globals/Testimonials'
+import AboutPage from './globals/AboutPage'
+import SiteSettings from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
