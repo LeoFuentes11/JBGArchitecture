@@ -2,6 +2,7 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import sharp from 'sharp'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -72,6 +73,7 @@ export default buildConfig({
       ssl: { rejectUnauthorized: false },
     },
     migrationDir: path.resolve(dirnamePath, 'migrations'),
+    push: true,
   }),
 
   plugins: [
@@ -85,6 +87,8 @@ export default buildConfig({
   ],
 
   secret: process.env.PAYLOAD_SECRET || 'fallback-dev-secret-change-in-production',
+
+  sharp,
 
   typescript: {
     outputFile: path.resolve(dirnamePath, 'payload-types.ts'),
