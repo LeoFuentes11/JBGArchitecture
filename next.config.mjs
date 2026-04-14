@@ -22,6 +22,7 @@ const nextConfig = {
       '.js': ['.ts', '.tsx', '.js'],
       '.jsx': ['.tsx', '.jsx'],
     }
+    config.resolve.alias['pg-native'] = false
     return config
   },
 }
