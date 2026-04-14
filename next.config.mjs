@@ -10,7 +10,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'jbgarchitects.com',
+        hostname: 'jbg-architecture.vercel.app',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
       },
     ],
   },
