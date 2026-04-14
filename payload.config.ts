@@ -1,4 +1,4 @@
-import { buildConfig } from 'payload'
+import { buildConfig, PayloadRequest } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
@@ -7,14 +7,19 @@ import { fileURLToPath } from 'url'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
-import { Projects } from './collections/Projects'
+import { Pages } from './collections/Pages'
+import { Categories } from './collections/Categories'
 import { BlogPosts } from './collections/BlogPosts'
 
+import { Header } from './globals/Header'
+import { Footer } from './globals/Footer'
+import { SiteSettings } from './globals/SiteSettings'
 import { HeroSlides } from './globals/HeroSlides'
 import { Services } from './globals/Services'
 import { Testimonials } from './globals/Testimonials'
 import { AboutPage } from './globals/AboutPage'
-import { SiteSettings } from './globals/SiteSettings'
+
+import { getServerSideURL } from './lib/getURL'
 
 const filename = fileURLToPath(import.meta.url)
 const dirnamePath = path.dirname(filename)
@@ -22,17 +27,44 @@ const dirnamePath = path.dirname(filename)
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || process.env.NEXT_PUBLIC_SITE_URL || '',
 
-  editor: lexicalEditor(),
-
   admin: {
     user: Users.slug,
     meta: {
       titleSuffix: '— JBG Architecture CMS',
     },
+    livePreview: {
+      breakpoints: [
+        {
+          label: 'Mobile',
+          name: 'mobile',
+          width: 375,
+          height: 667,
+        },
+        {
+          label: 'Tablet',
+          name: 'tablet',
+          width: 768,
+          height: 1024,
+        },
+        {
+          label: 'Desktop',
+          name: 'desktop',
+          width: 1440,
+          height: 900,
+        },
+      ],
+    },
+    importMap: {
+      baseDir: path.resolve(dirnamePath),
+    },
   },
 
-  collections: [Users, Media, Projects, BlogPosts],
-  globals: [HeroSlides, Services, Testimonials, AboutPage, SiteSettings],
+  editor: lexicalEditor(),
+
+  cors: [getServerSideURL()].filter(Boolean),
+
+  collections: [Users, Media, Pages, Categories, BlogPosts],
+  globals: [Header, Footer, SiteSettings],
 
   db: postgresAdapter({
     pool: {
@@ -56,6 +88,19 @@ export default buildConfig({
 
   typescript: {
     outputFile: path.resolve(dirnamePath, 'payload-types.ts'),
+  },
+
+  jobs: {
+    access: {
+      run: ({ req }: { req: PayloadRequest }): boolean => {
+        if (req.user) return true
+        const secret = process.env.CRON_SECRET
+        if (!secret) return false
+        const authHeader = req.headers.get('authorization')
+        return authHeader === `Bearer ${secret}`
+      },
+    },
+    tasks: [],
   },
 
   onInit: async (payload) => {

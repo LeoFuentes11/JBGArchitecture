@@ -2,12 +2,12 @@ import type { CollectionConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { isAdminOrEditor } from '@/lib/access'
 
-export const BlogPosts: CollectionConfig = {
-  slug: 'blog-posts',
+export const Pages: CollectionConfig = {
+  slug: 'pages',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'status', 'publishedAt'],
-    preview: (doc) => `${process.env.NEXT_PUBLIC_SITE_URL}/news/${doc.slug}`,
+    defaultColumns: ['title', 'slug', 'status'],
+    preview: (doc) => `${process.env.NEXT_PUBLIC_SITE_URL}/${doc.slug === 'home' ? '' : doc.slug}`,
   },
   access: {
     read: () => true,
@@ -27,7 +27,7 @@ export const BlogPosts: CollectionConfig = {
       required: true,
       unique: true,
       admin: {
-        description: 'URL-friendly identifier. Use lowercase letters, numbers, and hyphens only.',
+        description: 'URL path (e.g., "about", "contact"). Use "home" for homepage.',
       },
     },
     {
@@ -41,37 +41,10 @@ export const BlogPosts: CollectionConfig = {
       ],
     },
     {
-      name: 'category',
-      type: 'relationship',
-      relationTo: 'categories' as any,
-      label: 'Category',
-      admin: {
-        description: 'Select a category for this post',
-      },
-    },
-    {
-      name: 'publishedAt',
-      type: 'date',
-      label: 'Published At',
-      admin: {
-        date: {
-          pickerAppearance: 'dayAndTime',
-        },
-      },
-    },
-    {
       name: 'heroImage',
       type: 'upload',
       relationTo: 'media',
       label: 'Hero Image',
-    },
-    {
-      name: 'excerpt',
-      type: 'textarea',
-      label: 'Excerpt',
-      admin: {
-        description: 'Plain text summary shown in listings. Keep to 2–3 sentences.',
-      },
     },
     {
       name: 'content',
@@ -99,4 +72,4 @@ export const BlogPosts: CollectionConfig = {
   ],
 }
 
-export default BlogPosts
+export default Pages
