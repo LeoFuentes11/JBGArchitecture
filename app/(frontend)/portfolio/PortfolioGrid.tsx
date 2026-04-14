@@ -1,8 +1,10 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import type { Where } from 'payload'
 import type { Project, Media } from '@/types/cms'
 import { FadeUp } from '@/components/ui/FadeUp'
+import { getPayloadClient } from '@/lib/payload'
 
 const categoryLabels: Record<string, string> = {
   'interior-design': 'Interior Design',
@@ -10,38 +12,44 @@ const categoryLabels: Record<string, string> = {
   'commercial': 'Commercial',
   'residential': 'Residential',
   'heritage': 'Heritage',
-  'before-after': 'Before + After',
+  'landscape': 'Landscape',
+  'hospitality': 'Hospitality',
 }
-
-const placeholderProjects: Project[] = [
-  { id: '1', title: 'Murdoch Hill Wines', slug: 'murdoch-hill-wines', category: 'wine', shortDescription: 'A restrained, elegant cellar door for one of the Adelaide Hills\' most acclaimed producers.', heroImage: { id: 'ph1', alt: 'Murdoch Hill Wines', url: '/images/placeholder-wine.jpg', updatedAt: '', createdAt: '' }, location: 'Adelaide Hills, SA', year: 2022, updatedAt: '', createdAt: '' },
-  { id: '2', title: 'Rieslingfreak', slug: 'rieslingfreak', category: 'wine', shortDescription: 'A compact, purpose-built cellar door celebrating Clare Valley\'s most iconic variety.', heroImage: { id: 'ph2', alt: 'Rieslingfreak Cellar Door', url: '/images/placeholder-wine.jpg', updatedAt: '', createdAt: '' }, location: 'Clare Valley, SA', year: 2021, updatedAt: '', createdAt: '' },
-  { id: '3', title: 'River House', slug: 'river-house', category: 'residential', shortDescription: 'A contemporary riverside retreat designed for the rhythm of regional living.', heroImage: { id: 'ph3', alt: 'River House', url: '/images/placeholder-residential.jpg', updatedAt: '', createdAt: '' }, location: 'South Australia', year: 2023, updatedAt: '', createdAt: '' },
-  { id: '4', title: 'Cape Jaffa House', slug: 'cape-jaffa-house', category: 'residential', shortDescription: 'A coastal holiday home that frames the Southern Ocean with simplicity and grace.', heroImage: { id: 'ph4', alt: 'Cape Jaffa House', url: '/images/placeholder-residential.jpg', updatedAt: '', createdAt: '' }, location: 'Cape Jaffa, SA', year: 2023, updatedAt: '', createdAt: '' },
-  { id: '5', title: 'Henschke Cellar Door', slug: 'henschke-cellar-door', category: 'heritage', shortDescription: 'Restoration and expansion of an iconic South Australian wine estate.', heroImage: { id: 'ph5', alt: 'Henschke Cellar Door', url: '/images/placeholder-heritage.jpg', updatedAt: '', createdAt: '' }, location: 'Eden Valley, SA', year: 2021, updatedAt: '', createdAt: '' },
-  { id: '6', title: 'Beerenberg Farm', slug: 'beerenberg-farm', category: 'commercial', shortDescription: 'Farm-gate retail and visitor experience design for a much-loved South Australian producer.', heroImage: { id: 'ph6', alt: 'Beerenberg Farm', url: '/images/placeholder-commercial.jpg', updatedAt: '', createdAt: '' }, location: 'Hahndorf, SA', year: 2020, updatedAt: '', createdAt: '' },
-]
 
 interface PortfolioGridProps {
   category?: string
 }
 
-export function PortfolioGrid({ category }: PortfolioGridProps) {
-  const displayed: Project[] = category
-    ? placeholderProjects.filter((p) => p.category === category)
-    : placeholderProjects
+export async function PortfolioGrid({ category }: PortfolioGridProps) {
+  let projects: Project[] = []
 
-  if (displayed.length === 0) {
+  try {
+    const payload = await getPayloadClient()
+    const where: Where = category
+      ? { and: [{ status: { equals: 'published' } }, { category: { equals: category } }] }
+      : { status: { equals: 'published' } }
+    const result = await payload.find({
+      collection: 'projects',
+      where,
+      limit: 100,
+      sort: '-createdAt',
+    })
+    projects = result.docs as unknown as Project[]
+  } catch {
+    // Show empty state
+  }
+
+  if (projects.length === 0) {
     return (
       <div className="py-20 text-center">
-        <p className="font-body text-text-muted">No projects found in this category yet.</p>
+        <p className="font-body text-text-muted">No projects found{category ? ' in this category' : ''} yet.</p>
       </div>
     )
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-      {displayed.map((project, i) => {
+      {projects.map((project, i) => {
         const heroImage = typeof project.heroImage !== 'string' ? project.heroImage as Media : null
         return (
           <FadeUp key={project.id} delay={i * 0.06}>

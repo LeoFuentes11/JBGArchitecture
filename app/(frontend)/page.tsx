@@ -5,7 +5,10 @@ import { ServicesSection } from '@/components/sections/ServicesSection'
 import { FeaturedProjects } from '@/components/sections/FeaturedProjects'
 import { Testimonial } from '@/components/sections/Testimonial'
 import { ContactCTA } from '@/components/sections/ContactCTA'
+import { getPayloadClient } from '@/lib/payload'
 import type { Project } from '@/types/cms'
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'JBG Architects | Premier Architecture South Australia',
@@ -57,7 +60,25 @@ const jsonLd = {
 }
 
 export default async function HomePage() {
-  const featuredProjects: Project[] = []
+  let featuredProjects: Project[] = []
+
+  try {
+    const payload = await getPayloadClient()
+    const result = await payload.find({
+      collection: 'projects',
+      where: {
+        and: [
+          { status: { equals: 'published' } },
+          { featured: { equals: true } },
+        ],
+      },
+      limit: 3,
+      sort: '-createdAt',
+    })
+    featuredProjects = result.docs as unknown as Project[]
+  } catch {
+    // Use empty array — FeaturedProjects will show placeholders
+  }
 
   return (
     <>

@@ -3,13 +3,33 @@ import Link from 'next/link'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { FadeUp } from '@/components/ui/FadeUp'
 import { ArchLine } from '@/components/ui/ArchLine'
+import { getPayloadClient } from '@/lib/payload'
+import type { Stat } from '@/types/cms'
 
-export function AboutIntro() {
+const FALLBACK_STATS: Stat[] = [
+  { value: '25+', label: 'Years of Practice' },
+  { value: '300+', label: 'Residential Projects' },
+  { value: '6', label: 'Project Categories' },
+  { value: 'SA', label: 'Regional Focus' },
+]
+
+export async function AboutIntro() {
+  let stats: Stat[] = FALLBACK_STATS
+
+  try {
+    const payload = await getPayloadClient()
+    const result = await payload.findGlobal({ slug: 'about-page' })
+    if (result?.stats?.length > 0) {
+      stats = result.stats as Stat[]
+    }
+  } catch {
+    // Use fallback data
+  }
+
   return (
     <section className="section-padding bg-bg">
       <div className="container-content">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-          {/* Left — text */}
           <div>
             <SectionHeader
               label="Who We Are"
@@ -42,16 +62,10 @@ export function AboutIntro() {
             </FadeUp>
           </div>
 
-          {/* Right — stats */}
           <div>
             <FadeUp delay={0.1}>
               <div className="grid grid-cols-2 gap-px bg-border">
-                {[
-                  { value: '25+', label: 'Years of Practice' },
-                  { value: '300+', label: 'Residential Projects' },
-                  { value: '6', label: 'Project Categories' },
-                  { value: 'SA', label: 'Regional Focus' },
-                ].map((stat, i) => (
+                {stats.map((stat, i) => (
                   <div key={i} className="bg-bg p-10 flex flex-col items-center justify-center text-center">
                     <span className="font-display text-5xl font-light text-accent mb-2">{stat.value}</span>
                     <span className="font-body text-xs tracking-[0.1em] uppercase text-text-muted">{stat.label}</span>
@@ -62,7 +76,6 @@ export function AboutIntro() {
           </div>
         </div>
 
-        {/* Divider */}
         <div className="mt-20 md:mt-28">
           <ArchLine />
         </div>

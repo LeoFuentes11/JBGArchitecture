@@ -5,51 +5,15 @@ import { SectionHeader } from '@/components/ui/SectionHeader'
 import { FadeUp } from '@/components/ui/FadeUp'
 import { ArchLine } from '@/components/ui/ArchLine'
 import type { BlogPost, Media } from '@/types/cms'
+import { getPayloadClient } from '@/lib/payload'
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'News — Latest from JBG',
   description:
     'News, project updates, and design insights from JBG Architects, Barossa Valley, South Australia.',
 }
-
-const placeholderPosts: BlogPost[] = [
-  {
-    id: '1',
-    title: 'The Future of Cellar Door Design in the Barossa',
-    slug: 'future-cellar-door-design-barossa',
-    status: 'published',
-    excerpt: 'As the Barossa Valley continues to attract international visitors, winery architecture is evolving to balance hospitality ambitions with the authentic character of the region.',
-    heroImage: { id: 'ph1', alt: 'Barossa cellar door', url: '/images/placeholder-wine.jpg', updatedAt: '', createdAt: '' },
-    publishedAt: '2024-03-15',
-    category: 'industry',
-    updatedAt: '',
-    createdAt: '',
-  },
-  {
-    id: '2',
-    title: 'Heritage Listing: What It Means for Your Property',
-    slug: 'heritage-listing-what-it-means',
-    status: 'published',
-    excerpt: 'Many South Australian homeowners are surprised to learn that heritage listing doesn\'t mean your property is frozen in time.',
-    heroImage: { id: 'ph2', alt: 'Heritage home', url: '/images/placeholder-heritage.jpg', updatedAt: '', createdAt: '' },
-    publishedAt: '2024-02-08',
-    category: 'news',
-    updatedAt: '',
-    createdAt: '',
-  },
-  {
-    id: '3',
-    title: 'River House: Project Complete',
-    slug: 'river-house-project-complete',
-    status: 'published',
-    excerpt: 'After 18 months on site, we\'re delighted to share the completed River House — a contemporary riverside retreat that frames the landscape with honest materials.',
-    heroImage: { id: 'ph3', alt: 'River House', url: '/images/placeholder-residential.jpg', updatedAt: '', createdAt: '' },
-    publishedAt: '2024-01-20',
-    category: 'behind-the-scenes',
-    updatedAt: '',
-    createdAt: '',
-  },
-]
 
 const categoryLabels: Record<string, string> = {
   news: 'News',
@@ -59,7 +23,20 @@ const categoryLabels: Record<string, string> = {
 }
 
 export default async function NewsPage() {
-  const displayed: BlogPost[] = placeholderPosts
+  let displayed: BlogPost[] = []
+
+  try {
+    const payload = await getPayloadClient()
+    const result = await payload.find({
+      collection: 'blog-posts',
+      where: { status: { equals: 'published' } },
+      limit: 50,
+      sort: '-publishedAt',
+    })
+    displayed = result.docs as unknown as BlogPost[]
+  } catch {
+    // Show empty state
+  }
 
   return (
     <>

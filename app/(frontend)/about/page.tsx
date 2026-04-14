@@ -5,6 +5,10 @@ import { SectionHeader } from '@/components/ui/SectionHeader'
 import { FadeUp } from '@/components/ui/FadeUp'
 import { ArchLine } from '@/components/ui/ArchLine'
 import { ContactCTA } from '@/components/sections/ContactCTA'
+import { getPayloadClient } from '@/lib/payload'
+import type { AboutPageGlobal, Media } from '@/types/cms'
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'About — Our Story',
@@ -12,7 +16,7 @@ export const metadata: Metadata = {
     'JBG Architects has been serving South Australia since 1998. Based in the Barossa Valley, we bring passion, expertise and a deep regional commitment to every project.',
 }
 
-const values = [
+const FALLBACK_VALUES = [
   {
     title: 'Regional Connection',
     description:
@@ -35,7 +39,40 @@ const values = [
   },
 ]
 
-export default function AboutPage() {
+const FALLBACK_STORY = [
+  'Founded in 1998, JBG Architects has grown from a small regional practice into one of South Australia\'s most respected architectural firms. From our studio in Tanunda — in the heart of the Barossa Valley — we serve clients across the region and beyond.',
+  'Our team has a passion for regional lifestyles and for meeting the needs of those communities. We see this evolving into an architectural style that is unique to a regional way of life — honest, generous, and deeply connected to the South Australian landscape.',
+  'Over 300 residential projects, dozens of award-winning wine industry commissions, and a portfolio of sensitive heritage work define our practice. We are dedicated to accessible and approachable regional architecture that adds genuine value.',
+]
+
+const FALLBACK_WINE = [
+  'Located in the heart of Australia\'s renowned Barossa Valley wine region, JBG Architects enjoys a strong working relationship within our regional wine industry. Our winery and cellar door projects include work for St Hugo, Torbreck, Henschke, Artisans of the Barossa, Rockford Wines, Yalumba Wines, Pernod Ricard, Murray Street Vineyards, Two Hands, Shaw + Smith, Grant Burge, and Hentley Farm Wines + Restaurant.',
+  'We understand the unique requirements of winery architecture: the need to balance operational efficiency with an authentic sense of place, and the importance of creating spaces that welcome and inspire visitors.',
+]
+
+export default async function AboutPage() {
+  let cmsData: AboutPageGlobal = {}
+
+  try {
+    const payload = await getPayloadClient()
+    const result = await payload.findGlobal({ slug: 'about-page' })
+    if (result) cmsData = result as unknown as AboutPageGlobal
+  } catch {
+    // Use fallback data
+  }
+
+  const values = cmsData.values?.length ? cmsData.values : FALLBACK_VALUES
+  const storyParagraphs = cmsData.storyParagraphs?.length
+    ? cmsData.storyParagraphs.map((p) => p.text)
+    : FALLBACK_STORY
+  const wineParagraphs = cmsData.wineIndustryParagraphs?.length
+    ? cmsData.wineIndustryParagraphs.map((p) => p.text)
+    : FALLBACK_WINE
+  const officeImage = cmsData.officeImage && typeof cmsData.officeImage !== 'string'
+    ? cmsData.officeImage as Media
+    : null
+  const officeImageUrl = officeImage?.url ?? '/images/about-office.jpg'
+  const officeImageAlt = officeImage?.alt ?? 'JBG Architects studio — Tanunda, Barossa Valley'
   return (
     <>
       {/* Page Hero */}
@@ -61,8 +98,8 @@ export default function AboutPage() {
               <FadeUp>
                 <div className="relative aspect-[4/5] bg-surface overflow-hidden">
                   <Image
-                    src="/images/about-office.jpg"
-                    alt="JBG Architects studio — Tanunda, Barossa Valley"
+                    src={officeImageUrl}
+                    alt={officeImageAlt}
                     fill
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 50vw"
@@ -84,23 +121,11 @@ export default function AboutPage() {
                 className="mb-8"
               />
               <FadeUp delay={0.2} className="space-y-5">
-                <p className="font-body text-base leading-relaxed text-text-muted">
-                  Founded in 1998, JBG Architects has grown from a small regional practice into one
-                  of South Australia&apos;s most respected architectural firms. From our studio in
-                  Tanunda — in the heart of the Barossa Valley — we serve clients across the region
-                  and beyond.
-                </p>
-                <p className="font-body text-base leading-relaxed text-text-muted">
-                  Our team has a passion for regional lifestyles and for meeting the needs of those
-                  communities. We see this evolving into an architectural style that is unique to a
-                  regional way of life — honest, generous, and deeply connected to the South
-                  Australian landscape.
-                </p>
-                <p className="font-body text-base leading-relaxed text-text-muted">
-                  Over 300 residential projects, dozens of award-winning wine industry commissions,
-                  and a portfolio of sensitive heritage work define our practice. We are dedicated to
-                  accessible and approachable regional architecture that adds genuine value.
-                </p>
+                {storyParagraphs.map((para, i) => (
+                  <p key={i} className="font-body text-base leading-relaxed text-text-muted">
+                    {para}
+                  </p>
+                ))}
               </FadeUp>
 
               <FadeUp delay={0.32} className="mt-8">
@@ -126,7 +151,7 @@ export default function AboutPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-10">
             {values.map((value, i) => (
-              <FadeUp key={value.title} delay={i * 0.08}>
+              <FadeUp key={i} delay={i * 0.08}>
                 <div className="flex gap-6">
                   <div className="shrink-0 pt-1">
                     <div className="w-8 h-8 border border-accent flex items-center justify-center">
@@ -156,19 +181,11 @@ export default function AboutPage() {
               className="mb-8"
             />
             <FadeUp delay={0.2} className="space-y-4">
-              <p className="font-body text-base leading-relaxed text-text-muted">
-                Located in the heart of Australia&apos;s renowned Barossa Valley wine region, JBG
-                Architects enjoys a strong working relationship within our regional wine industry.
-                Our winery and cellar door projects include work for St Hugo, Torbreck, Henschke,
-                Artisans of the Barossa, Rockford Wines, Yalumba Wines, Pernod Ricard, Murray
-                Street Vineyards, Two Hands, Shaw + Smith, Grant Burge, and Hentley Farm Wines +
-                Restaurant.
-              </p>
-              <p className="font-body text-base leading-relaxed text-text-muted">
-                We understand the unique requirements of winery architecture: the need to balance
-                operational efficiency with an authentic sense of place, and the importance of
-                creating spaces that welcome and inspire visitors.
-              </p>
+              {wineParagraphs.map((para, i) => (
+                <p key={i} className="font-body text-base leading-relaxed text-text-muted">
+                  {para}
+                </p>
+              ))}
             </FadeUp>
           </div>
         </div>

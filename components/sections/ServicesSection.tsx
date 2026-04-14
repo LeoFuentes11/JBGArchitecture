@@ -2,39 +2,49 @@ import React from 'react'
 import Link from 'next/link'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { FadeUp } from '@/components/ui/FadeUp'
+import { getPayloadClient } from '@/lib/payload'
+import type { Service } from '@/types/cms'
 
-const services = [
+const FALLBACK_SERVICES: Service[] = [
   {
     number: '01',
     title: 'Sketch Only Service',
-    description:
-      'An initial design exploration — hand or digital sketches that capture the concept and spatial arrangement of your project without full documentation.',
+    description: 'An initial design exploration — hand or digital sketches that capture the concept and spatial arrangement of your project without full documentation.',
     href: '/services#sketch-only',
   },
   {
     number: '02',
     title: 'Full Architectural Service',
-    description:
-      'End-to-end design and delivery from concept through to construction completion. Full project oversight, council approvals, and contractor administration.',
+    description: 'End-to-end design and delivery from concept through to construction completion. Full project oversight, council approvals, and contractor administration.',
     href: '/services#full-service',
   },
   {
     number: '03',
     title: 'Design & Documentation',
-    description:
-      'Detailed design development and construction documentation prepared to a level suitable for tendering and council submission.',
+    description: 'Detailed design development and construction documentation prepared to a level suitable for tendering and council submission.',
     href: '/services#design-documentation',
   },
   {
     number: '04',
     title: 'Extended Service',
-    description:
-      'Comprehensive post-construction support, interior design coordination, and ongoing architectural consultation for complex or evolving projects.',
+    description: 'Comprehensive post-construction support, interior design coordination, and ongoing architectural consultation for complex or evolving projects.',
     href: '/services#extended',
   },
 ]
 
-export function ServicesSection() {
+export async function ServicesSection() {
+  let services: Service[] = FALLBACK_SERVICES
+
+  try {
+    const payload = await getPayloadClient()
+    const result = await payload.findGlobal({ slug: 'services' })
+    if (result?.services?.length > 0) {
+      services = result.services as Service[]
+    }
+  } catch {
+    // Use fallback data
+  }
+
   return (
     <section className="section-padding bg-surface">
       <div className="container-content">
@@ -55,7 +65,7 @@ export function ServicesSection() {
           {services.map((service, i) => (
             <FadeUp key={service.number} delay={i * 0.08}>
               <Link
-                href={service.href}
+                href={service.href ?? '/services'}
                 className="group block bg-bg p-8 md:p-10 h-full hover:bg-primary transition-colors duration-400"
               >
                 <div className="flex items-start justify-between mb-6">

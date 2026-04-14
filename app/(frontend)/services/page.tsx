@@ -4,6 +4,10 @@ import { SectionHeader } from '@/components/ui/SectionHeader'
 import { FadeUp } from '@/components/ui/FadeUp'
 import { ArchLine } from '@/components/ui/ArchLine'
 import { ContactCTA } from '@/components/sections/ContactCTA'
+import { getPayloadClient } from '@/lib/payload'
+import type { ServicesGlobal } from '@/types/cms'
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'Services — What We Do',
@@ -11,79 +15,89 @@ export const metadata: Metadata = {
     'From initial concept sketches to full project delivery, JBG Architects offers a complete range of architectural services tailored to residential, commercial, winery, and heritage projects across South Australia.',
 }
 
-const services = [
+const FALLBACK_SERVICES = [
   {
-    id: 'sketch-only',
     number: '01',
     title: 'Sketch Only Service',
     tagline: 'Explore the Idea',
     description:
       'An accessible entry point to the design process. Our sketch service delivers hand or digital concept drawings that capture the spatial arrangement, massing, and character of your project — without committing to the full documentation process.',
     includes: [
-      'Initial client consultation and brief development',
-      'Site analysis and constraints review',
-      'Concept sketches (hand-drawn or digital)',
-      'Basic floor plan and elevation ideas',
-      'Design intent summary',
+      { item: 'Initial client consultation and brief development' },
+      { item: 'Site analysis and constraints review' },
+      { item: 'Concept sketches (hand-drawn or digital)' },
+      { item: 'Basic floor plan and elevation ideas' },
+      { item: 'Design intent summary' },
     ],
     suitable: 'Ideal for early-stage feasibility, planning discussions, or clients wanting to visualise a concept before proceeding.',
   },
   {
-    id: 'full-service',
     number: '02',
     title: 'Full Architectural Service',
     tagline: 'End-to-End Delivery',
     description:
       'Our comprehensive service takes your project from the first conversation through to the final construction certificate. We manage design, documentation, council approvals, tendering, and construction administration — so you can focus on what matters.',
     includes: [
-      'Brief development and client consultation',
-      'Concept and schematic design',
-      'Design development',
-      'Construction documentation',
-      'Development Application (DA) submission and management',
-      'Construction Certificate (CC) documents',
-      'Tender administration and contractor selection',
-      'Contract administration and site inspections',
-      'Final handover and defects review',
+      { item: 'Brief development and client consultation' },
+      { item: 'Concept and schematic design' },
+      { item: 'Design development' },
+      { item: 'Construction documentation' },
+      { item: 'Development Application (DA) submission and management' },
+      { item: 'Construction Certificate (CC) documents' },
+      { item: 'Tender administration and contractor selection' },
+      { item: 'Contract administration and site inspections' },
+      { item: 'Final handover and defects review' },
     ],
     suitable: 'The complete package for new builds, major renovations, commercial developments, and complex heritage projects.',
   },
   {
-    id: 'design-documentation',
     number: '03',
     title: 'Design & Documentation',
     tagline: 'Design Ready to Build',
     description:
       'When you need a developed design and a full set of construction documents — without ongoing site administration — this service delivers a complete documentation package suitable for council submission and contractor tendering.',
     includes: [
-      'Concept and design development',
-      'Full construction documentation set',
-      'Specifications and schedules',
-      'Development Application preparation',
-      'Tender package preparation',
+      { item: 'Concept and design development' },
+      { item: 'Full construction documentation set' },
+      { item: 'Specifications and schedules' },
+      { item: 'Development Application preparation' },
+      { item: 'Tender package preparation' },
     ],
     suitable: 'Well suited to owner-builders, experienced contractors, or clients who prefer to manage their own build process once the design is complete.',
   },
   {
-    id: 'extended',
     number: '04',
     title: 'Extended Service',
     tagline: 'Beyond Architecture',
     description:
       'For complex or evolving projects that require sustained architectural involvement, our extended service provides ongoing consultation, interior design coordination, and post-construction support across the lifetime of your project.',
     includes: [
-      'All services included in Full Architectural Service',
-      'Interior design and specification',
-      'Furniture, fixture and finish coordination',
-      'Landscape design liaison',
-      'Post-occupancy review and consultation',
-      'Ongoing architectural advisory',
+      { item: 'All services included in Full Architectural Service' },
+      { item: 'Interior design and specification' },
+      { item: 'Furniture, fixture and finish coordination' },
+      { item: 'Landscape design liaison' },
+      { item: 'Post-occupancy review and consultation' },
+      { item: 'Ongoing architectural advisory' },
     ],
     suitable: 'Ideal for premium residential projects, winery developments, and complex commercial builds requiring a high level of design integration and ongoing support.',
   },
 ]
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  let cmsServices = FALLBACK_SERVICES
+
+  try {
+    const payload = await getPayloadClient()
+    const result = await payload.findGlobal({ slug: 'services' })
+    const data = result as unknown as ServicesGlobal
+    if (data?.services?.length) {
+      cmsServices = data.services as typeof FALLBACK_SERVICES
+    }
+  } catch {
+    // Use fallback data
+  }
+
+  const services = cmsServices
   return (
     <>
       {/* Page Hero */}
@@ -112,7 +126,7 @@ export default function ServicesPage() {
         <div className="container-content">
           <div className="space-y-20 md:space-y-28">
             {services.map((service, i) => (
-              <div key={service.id} id={service.id}>
+              <div key={i} id={`service-${service.number}`}>
                 <FadeUp>
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
                     {/* Number */}
@@ -142,14 +156,16 @@ export default function ServicesPage() {
                       <div className="bg-surface p-8">
                         <p className="section-label mb-5">What&apos;s Included</p>
                         <ul className="space-y-3">
-                          {service.includes.map((item, j) => (
+                          {service.includes?.map((inc, j) => (
                             <li key={j} className="flex items-start gap-3">
                               <span className="shrink-0 w-4 h-4 mt-0.5 border border-accent flex items-center justify-center">
                                 <svg className="w-2.5 h-2.5 text-accent" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                 </svg>
                               </span>
-                              <span className="font-body text-sm text-text-muted leading-relaxed">{item}</span>
+                              <span className="font-body text-sm text-text-muted leading-relaxed">
+                                {typeof inc === 'string' ? inc : inc.item}
+                              </span>
                             </li>
                           ))}
                         </ul>
