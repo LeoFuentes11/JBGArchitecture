@@ -16,7 +16,7 @@ import AboutPage from './globals/AboutPage'
 import SiteSettings from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
+const dirnamePath = path.dirname(filename)
 
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || process.env.NEXT_PUBLIC_SITE_URL || '',
@@ -35,7 +35,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL,
     },
-    migrationDir: path.resolve(dirname, 'migrations'),
+    migrationDir: path.resolve(dirnamePath, 'migrations'),
   }),
 
   plugins: [
@@ -51,7 +51,7 @@ export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || 'fallback-dev-secret-change-in-production',
 
   typescript: {
-    outputFile: path.resolve(dirname, 'payload-types.ts'),
+    outputFile: path.resolve(dirnamePath, 'payload-types.ts'),
   },
 
   onInit: async (payload) => {

@@ -4,6 +4,7 @@ import type { ServerFunctionClient } from 'payload'
 import React from 'react'
 import { importMap } from './admin/importMap.js'
 import '@payloadcms/ui/css'
+import '@/admin/custom.scss'
 
 export const metadata = {
   title: 'JBG Architecture CMS',

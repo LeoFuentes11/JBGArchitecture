@@ -1,0 +1,485 @@
+@use 'sass:color';
+
+// =======================================================
+// JBG ARCHITECTURE - PREMIUM ADMIN THEME
+// Modern dark theme with premium aesthetics
+// =======================================================
+
+// Color Palette - Premium Dark
+$bg-primary: #0a0a0b;
+$bg-secondary: #111113;
+$bg-elevated: #18181b;
+$bg-hover: #1f1f23;
+$bg-active: #27272a;
+
+// Accent Colors
+$accent-primary: #22d3ee; // Cyan-400
+$accent-hover: #67e8f9; // Cyan-300
+$accent-muted: #0891b2; // Cyan-600
+
+$text-primary: #fafafa;
+$text-secondary: #a1a1aa;
+$text-muted: #71717a;
+
+$border-subtle: #27272a;
+$border-default: #3f3f46;
+
+// Status Colors
+$success: #10b981;
+$warning: #f59e0b;
+$error: #ef4444;
+$info: #3b82f6;
+
+// Shadows
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+$shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+$shadow-glow: 0 0 20px rgba(34, 211, 238, 0.15);
+
+// Border Radius
+$radius-sm: 6px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+
+// Transitions
+$transition-fast: 150ms ease;
+$transition-base: 200ms ease;
+$transition-slow: 300ms ease;
+
+// =======================================================
+// GLOBAL OVERRIDES
+// =======================================================
+:root {
+  --theme: dark;
+}
+
+*,
+*::before,
+*::after {
+  border-color: $border-subtle !important;
+}
+
+html[data-theme="dark"] {
+  --base: 20;
+  --color-bg: #{$bg-primary};
+  --color-bg-alt: #{$bg-secondary};
+  --color-bg-floating: #{$bg-elevated};
+  --color-text: #{$text-primary};
+  --color-text-alt: #{$text-secondary};
+  --color-text-muted: #{$text-muted};
+}
+
+// =======================================================
+// PAGE & LAYOUT
+// =======================================================
+[class*="page"] {
+  background: $bg-primary !important;
+  color: $text-primary;
+}
+
+[class*="layout"] {
+  background: $bg-primary !important;
+}
+
+// =======================================================
+// NAV/SIDEBAR - Premium Dark
+// =======================================================
+[class*="nav"] {
+  background: $bg-secondary !important;
+  border-right: 1px solid $border-subtle !important;
+}
+
+[class*="sidebar"] {
+  background: $bg-secondary !important;
+  border-right: 1px solid $border-subtle !important;
+}
+
+[class*="NavGroup"],
+[class*="nav-group"] {
+  background: transparent !important;
+  
+  [class*="nav"] {
+    background: transparent !important;
+  }
+}
+
+[class*="collection"] {
+  a[class*="nav"] {
+    background: transparent !important;
+    transition: all $transition-base;
+    
+    &:hover {
+      background: $bg-hover !important;
+    }
+    
+    &[class*="active"],
+    &[class*="selected"] {
+      background: $bg-active !important;
+      border-left: 3px solid $accent-primary;
+    }
+  }
+}
+
+// =======================================================
+// HEADER/COLLECTION TITLE
+// =======================================================
+[class*="header"] {
+  background: $bg-secondary !important;
+  border-bottom: 1px solid $border-subtle !important;
+}
+
+[class*="heading"],
+[class*="title"] {
+  color: $text-primary !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em;
+}
+
+// =======================================================
+// BUTTONS - Premium Style
+// =======================================================
+[class*="button"] {
+  border-radius: $radius-md !important;
+  font-weight: 500 !important;
+  transition: all $transition-base;
+  
+  &[class*="primary"] {
+    background: linear-gradient(135deg, $accent-primary, color.adjust($accent-primary, $lightness: -10%)) !important;
+    color: $bg-primary !important;
+    border: none !important;
+    box-shadow: $shadow-glow;
+    
+    &:hover {
+      background: $accent-hover !important;
+      transform: translateY(-1px);
+      box-shadow: 0 0 30px rgba(34, 211, 238, 0.25);
+    }
+  }
+  
+  &[class*="default"],
+  &:not([class*="primary"]) {
+    background: $bg-elevated !important;
+    border: 1px solid $border-default !important;
+    color: $text-primary !important;
+    
+    &:hover {
+      background: $bg-hover !important;
+      border-color: $accent-primary !important;
+    }
+  }
+}
+
+// =======================================================
+// CARDS & LIST ITEMS
+// =======================================================
+[class*="card"] {
+  background: $bg-secondary !important;
+  border: 1px solid $border-subtle !important;
+  border-radius: $radius-lg !important;
+  transition: all $transition-base;
+  
+  &:hover {
+    border-color: $border-default !important;
+    box-shadow: $shadow-md;
+  }
+}
+
+[class*="row"] {
+  background: $bg-secondary !important;
+  border-bottom: 1px solid $border-subtle !important;
+  transition: all $transition-fast;
+  
+  &:hover {
+    background: $bg-hover !important;
+  }
+}
+
+[class*="cell"] {
+  background: transparent !important;
+  color: $text-secondary;
+}
+
+// =======================================================
+// FORM ELEMENTS
+// =======================================================
+[class*="input"],
+[class*="field"],
+[class*="select"] {
+  background: $bg-elevated !important;
+  border: 1px solid $border-subtle !important;
+  border-radius: $radius-md !important;
+  color: $text-primary !important;
+  transition: all $transition-base;
+  
+  &::placeholder {
+    color: $text-muted !important;
+  }
+  
+  &:focus,
+  &:focus-within {
+    border-color: $accent-primary !important;
+    box-shadow: $shadow-glow;
+    outline: none;
+  }
+}
+
+[class*="label"] {
+  color: $text-secondary !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+}
+
+// =======================================================
+// EMPTY STATE - Premium
+// =======================================================
+[class*="empty"] {
+  background: $bg-secondary !important;
+  border: 1px dashed $border-default !important;
+  border-radius: $radius-xl !important;
+  padding: 3rem !important;
+  
+  p,
+  [class*="label"],
+  [class*="message"] {
+    color: $text-secondary !important;
+  }
+  
+  [class*="icon"] {
+    color: $accent-primary !important;
+    opacity: 0.5;
+  }
+}
+
+// =======================================================
+// TOGGLES & CHECKBOXES
+// =======================================================
+[class*="toggle"],
+[class*="switch"] {
+  background: $bg-elevated !important;
+  
+  &[class*="active"] {
+    background: $accent-primary !important;
+  }
+}
+
+[class*="checkbox"] {
+  accent-color: $accent-primary;
+}
+
+// =======================================================
+// DOCUMENT VIEW - Clean & Modern
+// =======================================================
+[class*="document"] {
+  background: $bg-primary !important;
+}
+
+[class*="sidebar"] [class*="field"] {
+  padding: 1rem 0;
+}
+
+[class*="upload"] {
+  background: $bg-elevated !important;
+  border: 2px dashed $border-default !important;
+  border-radius: $radius-lg !important;
+  
+  &:hover {
+    border-color: $accent-primary !important;
+  }
+}
+
+// =======================================================
+// MODALS & POPOVERS
+// =======================================================
+[class*="modal"],
+[class*="drawer"],
+[class*="popup"] {
+  background: $bg-secondary !important;
+  border: 1px solid $border-subtle !important;
+  box-shadow: $shadow-lg !important;
+}
+
+// =======================================================
+// STATUS BADGES
+// =======================================================
+[class*="status"],
+[class*="badge"] {
+  border-radius: $radius-sm !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  padding: 0.25rem 0.5rem !important;
+  
+  &[class*="draft"] {
+    background: rgba(245, 158, 11, 0.15) !important;
+    color: $warning !important;
+  }
+  
+  &[class*="published"] {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: $success !important;
+  }
+}
+
+// =======================================================
+// AVATAR & USER MENU
+// =======================================================
+[class*="avatar"] {
+  border-radius: 50% !important;
+  border: 2px solid $border-default;
+}
+
+[class*="user"] [class*="email"],
+[class*="user"] [class*="name"] {
+  color: $text-primary !important;
+}
+
+// =======================================================
+// TOOLTIPS
+// =======================================================
+[class*="tooltip"] {
+  background: $bg-elevated !important;
+  color: $text-primary !important;
+  border-radius: $radius-sm !important;
+  box-shadow: $shadow-md !important;
+}
+
+// =======================================================
+// PAGINATION
+// =======================================================
+[class*="pagination"] {
+  [class*="button"] {
+    background: $bg-elevated !important;
+    border: 1px solid $border-subtle !important;
+    
+    &:disabled {
+      opacity: 0.5;
+    }
+    
+    &:not(:disabled):hover {
+      border-color: $accent-primary;
+    }
+  }
+}
+
+// =======================================================
+// SEARCH BAR - Premium Style
+// =======================================================
+[class*="search"] {
+  background: $bg-elevated !important;
+  border: 1px solid $border-subtle !important;
+  border-radius: $radius-lg !important;
+  
+  input {
+    background: transparent !important;
+    color: $text-primary !important;
+    
+    &::placeholder {
+      color: $text-muted !important;
+    }
+  }
+}
+
+// =======================================================
+// CUSTOM LOGO
+// =======================================================
+.jbg-logo {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1.25rem;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.05), transparent);
+  border-bottom: 1px solid rgba(34, 211, 238, 0.1);
+  margin-bottom: 0.5rem;
+  
+  .jbg-logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, $accent-primary, $accent-hover);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .jbg-logo-sub {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: $text-muted;
+    margin-top: 0.125rem;
+  }
+}
+
+// =======================================================
+// ANIMATIONS
+// =======================================================
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+[class*="loading"],
+[class*="spinner"] {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+// =======================================================
+// RESPONSIVE
+// =======================================================
+@media (max-width: 768px) {
+  [class*="sidebar"] {
+    width: 100% !important;
+    position: absolute;
+    z-index: 100;
+  }
+  
+  [class*="mobile"] {
+    display: block !important;
+  }
+}
+
+// =======================================================
+// PAYLOAD 3.x SPECIFIC OVERRIDES
+// =======================================================
+
+// Admin layout container
+[class*="admin-wrap"] {
+  background: $bg-primary !important;
+}
+
+// Collection list view
+[class*="collection-list"] {
+  background: transparent !important;
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $border-default;
+  border-radius: 4px;
+  
+  &:hover {
+    background: $text-muted;
+  }
+}
+
+// =======================================================
+// UTILITY CLASSES
+// =======================================================
+.jbg-theme-dark {
+  --bg-primary: #{$bg-primary};
+  --bg-secondary: #{$bg-secondary};
+  --accent: #{$accent-primary};
+}
