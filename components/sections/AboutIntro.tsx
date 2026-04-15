@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { FadeUp } from '@/components/ui/FadeUp'
 import { ArchLine } from '@/components/ui/ArchLine'
-import { getPayloadClient } from '@/lib/payload'
+import { getAboutPage } from '@/lib/sanity'
+import { transformAboutPage } from '@/lib/transform'
 import type { Stat } from '@/types/cms'
 
 const FALLBACK_STATS: Stat[] = [
@@ -17,10 +18,10 @@ export async function AboutIntro() {
   let stats: Stat[] = FALLBACK_STATS
 
   try {
-    const payload = await getPayloadClient()
-    const result = await payload.findGlobal({ slug: 'about-page' })
-    if ((result?.stats?.length ?? 0) > 0) {
-      stats = result.stats as Stat[]
+    const sanityData = await getAboutPage()
+    if (sanityData?.stats?.length > 0) {
+      const transformed = transformAboutPage(sanityData)
+      stats = transformed.stats || FALLBACK_STATS
     }
   } catch {
     // Use fallback data

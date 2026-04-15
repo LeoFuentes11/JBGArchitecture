@@ -1,7 +1,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { FadeUp } from '@/components/ui/FadeUp'
-import { getPayloadClient } from '@/lib/payload'
+import { getSiteSettings } from '@/lib/sanity'
+import { transformSiteSettings } from '@/lib/transform'
 import type { SiteSettingsGlobal } from '@/types/cms'
 
 const FALLBACK_SETTINGS: SiteSettingsGlobal = {
@@ -17,13 +18,12 @@ function formatAddress(address: SiteSettingsGlobal['address']): string {
 }
 
 export async function ContactCTA() {
-  let settings: SiteSettingsGlobal = FALLBACK_SETTINGS
+  let settings = FALLBACK_SETTINGS
 
   try {
-    const payload = await getPayloadClient()
-    const result = await payload.findGlobal({ slug: 'site-settings' })
-    if (result) {
-      settings = result as unknown as SiteSettingsGlobal
+    const sanityData = await getSiteSettings()
+    if (sanityData) {
+      settings = transformSiteSettings(sanityData)
     }
   } catch {
     // Use fallback data

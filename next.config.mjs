@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // next-sanity requires these packages to be transpiled
+  transpilePackages: ['next-sanity'],
   images: {
     remotePatterns: [
       {

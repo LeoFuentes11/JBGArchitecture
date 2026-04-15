@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getPayloadClient } from '@/lib/payload'
-import type { BlogPost, Media } from '@/types/cms'
+import { getPostBySlug, getPosts } from '@/lib/sanity'
+import { transformPost } from '@/lib/transform'
 import { FadeUp } from '@/components/ui/FadeUp'
 import { ArchLine } from '@/components/ui/ArchLine'
 
@@ -13,53 +13,20 @@ interface BlogPostPageProps {
   params: Promise<{ slug: string }>
 }
 
-const categoryLabels: Record<string, string> = {
-  news: 'News',
-  'project-update': 'Projects',
-  industry: 'Industry',
-  'behind-the-scenes': 'Design Insights',
-}
-
-async function getPost(slug: string): Promise<BlogPost | null> {
-  try {
-    const payload = await getPayloadClient()
-    const result = await payload.find({
-      collection: 'blog-posts',
-      where: {
-        and: [
-          { slug: { equals: slug } },
-          { status: { equals: 'published' } },
-        ],
-      },
-      limit: 1,
-    })
-    if (result.docs.length === 0) return null
-    return result.docs[0] as unknown as BlogPost
-  } catch {
-    return null
-  }
-}
-
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params
-  const post = await getPost(slug)
+  const post = await getPostBySlug(slug).then(transformPost)
   if (!post) return { title: 'Post Not Found' }
   return {
-    title: post.seo?.metaTitle ?? `${post.title} — JBG Architects`,
-    description: post.seo?.metaDescription ?? post.excerpt,
+    title: `${post.title} — JBG Architects`,
+    description: post.excerpt,
   }
 }
 
 export async function generateStaticParams() {
   try {
-    const payload = await getPayloadClient()
-    const result = await payload.find({
-      collection: 'blog-posts',
-      where: { status: { equals: 'published' } },
-      limit: 200,
-      select: { slug: true },
-    })
-    return (result.docs as unknown as { slug: string }[]).map((doc) => ({ slug: doc.slug }))
+    const posts = await getPosts(200)
+    return posts.map((post: any) => ({ slug: post.slug?.current || post.slug }))
   } catch {
     return []
   }
@@ -67,23 +34,19 @@ export async function generateStaticParams() {
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params
-  const post = await getPost(slug)
+  const rawPost = await getPostBySlug(slug)
+  const post = transformPost(rawPost)
 
   if (!post) notFound()
 
-  const heroImage = post.heroImage && typeof post.heroImage !== 'string' ? post.heroImage as Media : null
-
   return (
     <>
-      {/* Hero */}
       <div className="pt-32 pb-12 md:pt-40 md:pb-16 bg-surface">
         <div className="container-content max-w-3xl">
           <FadeUp>
             <div className="flex items-center gap-3 mb-5">
               {post.category && (
-                <span className="section-label">
-                  {categoryLabels[post.category] ?? post.category}
-                </span>
+                <span className="section-label">{post.category}</span>
               )}
               {post.publishedAt && (
                 <>
@@ -115,14 +78,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
       </div>
 
-      {/* Hero image */}
-      {heroImage?.url && (
+      {post.heroImage && (
         <div className="bg-bg">
           <div className="container-content max-w-3xl">
             <div className="relative aspect-[16/9] overflow-hidden bg-surface">
               <Image
-                src={heroImage.url}
-                alt={heroImage.alt || post.title}
+                src={post.heroImage}
+                alt={post.title}
                 fill
                 priority
                 className="object-cover"
@@ -133,20 +95,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
       )}
 
-      {/* Content */}
-      {post.content && (
-        <section className="section-padding bg-bg">
-          <div className="container-content max-w-3xl">
-            <div className="font-body text-base leading-relaxed text-text-muted space-y-5">
-              {post.content.split('\n\n').map((para, i) => (
-                <p key={i}>{para}</p>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Back link */}
       <div className="bg-surface py-12">
         <div className="container-content">
           <Link
