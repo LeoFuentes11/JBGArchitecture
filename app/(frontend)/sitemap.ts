@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { getPayloadClient } from '@/lib/payload'
+import { getPosts, getPages } from '@/lib/sanity'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://jbgarchitects.com'
 
@@ -16,36 +16,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   try {
-    const payload = await getPayloadClient()
-
-    const [projects, posts] = await Promise.all([
-      payload.find({
-        collection: 'projects',
-        where: { status: { equals: 'published' } },
-        limit: 500,
-        select: { slug: true, updatedAt: true },
-      }),
-      payload.find({
-        collection: 'blog-posts',
-        where: { status: { equals: 'published' } },
-        limit: 500,
-        select: { slug: true, updatedAt: true },
-      }),
+    const [pages, posts] = await Promise.all([
+      getPages(),
+      getPosts(500),
     ])
 
-    const projectRoutes: MetadataRoute.Sitemap = (projects.docs as unknown as { slug: string; updatedAt: string }[]).map(
-      (doc) => ({
-        url: `${siteUrl}/portfolio/${doc.slug}`,
-        lastModified: new Date(doc.updatedAt),
+    const projectRoutes: MetadataRoute.Sitemap = (pages || []).map(
+      (page: any) => ({
+        url: `${siteUrl}/portfolio/${page.slug?.current || page.slug}`,
+        lastModified: new Date(),
         changeFrequency: 'monthly' as const,
         priority: 0.7,
       })
     )
 
-    const postRoutes: MetadataRoute.Sitemap = (posts.docs as unknown as { slug: string; updatedAt: string }[]).map(
-      (doc) => ({
-        url: `${siteUrl}/news/${doc.slug}`,
-        lastModified: new Date(doc.updatedAt),
+    const postRoutes: MetadataRoute.Sitemap = (posts || []).map(
+      (post: any) => ({
+        url: `${siteUrl}/news/${post.slug?.current || post.slug}`,
+        lastModified: post.publishedAt ? new Date(post.publishedAt) : new Date(),
         changeFrequency: 'monthly' as const,
         priority: 0.6,
       })
